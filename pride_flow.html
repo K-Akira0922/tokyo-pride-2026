@@ -12,7 +12,12 @@
     --green: #4CAF50; --blue: #64B5F6; --gold: #FFD700;
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { background: var(--bg); color: var(--text); font-family: 'Noto Sans JP', sans-serif; min-height: 100vh; }
+  body {
+    background: var(--bg); color: var(--text);
+    font-family: 'Noto Sans JP', sans-serif; min-height: 100vh;
+    max-width: 600px; margin: 0 auto;
+    border-left: 1px solid #ffffff08; border-right: 1px solid #ffffff08;
+  }
   .rainbow-bar {
     height: 4px; width: 100%; position: fixed; top: 0; left: 0; z-index: 100;
     background: linear-gradient(90deg,#FF3A5C,#FF8C00,#FFD700,#4CAF50,#2196F3,#9C27B0);
