@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tokyo Pride 2026 – 動線シミュレーター</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700;900&family=Space+Mono:wght@400;700&display=swap');
+  :root {
+    --bg: #0d0d14; --surface: #16161f; --surface2: #1e1e2e;
+    --text: #f0f0f8; --dim: #888899; --accent: #FF3A5C;
+    --green: #4CAF50; --blue: #64B5F6; --gold: #FFD700;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--text); font-family: 'Noto Sans JP', sans-serif; min-height: 100vh; }
+  .rainbow-bar {
+    height: 4px; width: 100%; position: fixed; top: 0; left: 0; z-index: 100;
+    background: linear-gradient(90deg,#FF3A5C,#FF8C00,#FFD700,#4CAF50,#2196F3,#9C27B0);
+  }
+  header { margin-top: 4px; padding: 14px 18px 10px; border-bottom: 1px solid #ffffff10; }
+  header h1 { font-size: 12px; font-family: 'Space Mono',monospace; color: var(--dim); text-transform: uppercase; letter-spacing:.1em; }
+  header h1 span { display:block; font-size:15px; color:var(--text); font-family:'Noto Sans JP',sans-serif; margin-top:2px; }
+
+  .scene { padding: 14px 18px; }
+
+  /* ---- LAYOUT ---- */
+  .layout {
+    position: relative; width: 100%; height: 620px;
+    background: var(--surface2); border-radius: 14px;
+    overflow: hidden; margin-bottom: 12px; border: 1px solid #ffffff08;
+  }
+
+  /* ZONES */
+  .zone {
+    position: absolute; border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px; font-weight: 700; text-align: center;
+  }
+  #z-stock {
+    top:8px; left:8px; right:8px; height:62px;
+    background:#181828; border:1.5px dashed #ffffff18; color:#444;
+  }
+  #z-bento {
+    top:84px; left:8px; width:44%; height:50px;
+    background:#0d2010; border:1.5px solid #4CAF5048; color:var(--green);
+  }
+  #z-drink {
+    top:84px; right:8px; width:44%; height:50px;
+    background:#06060f; border:1.5px solid #2196F348; color:var(--blue);
+  }
+  #z-exit {
+    bottom:8px; left:50%; transform:translateX(-50%);
+    width:68px; height:30px;
+    background:#1e0808; border:1.5px solid #FF3A5C44; color:var(--accent);
+    font-size:10px;
+  }
+
+  /* STAFF */
+  .staff {
+    position: absolute; width:26px; height:26px; border-radius:50%;
+    display:flex; align-items:center; justify-content:center;
+    font-size:9px; font-weight:700; border:2px solid; z-index:5;
+    transition: all .4s ease;
+  }
+
+  /* VISITOR */
+  .visitor {
+    position: absolute; width:22px; height:22px; border-radius:50%;
+    background:white; display:flex; align-items:center; justify-content:center;
+    font-size:12px; z-index:10;
+    transition: top .65s cubic-bezier(.4,0,.2,1), left .65s cubic-bezier(.4,0,.2,1), opacity .5s ease;
+  }
+
+  /* LABEL */
+  .lbl {
+    position:absolute; font-size:8px; font-family:'Space Mono',monospace;
+    background:#000000bb; border:1px solid #ffffff15; border-radius:3px;
+    padding:2px 4px; color:#aaa; z-index:6; white-space:nowrap;
+    transition:opacity .3s; pointer-events:none;
+  }
+
+  /* ARROWS */
+  .arr { position:absolute; pointer-events:none; z-index:3; transition:opacity .4s; }
+
+  /* STEP INFO */
+  .step-info {
+    background:var(--surface); border-radius:12px; padding:13px 15px;
+    margin-bottom:11px; border-left:3px solid var(--accent); min-height:68px;
+  }
+  .step-info h3 { font-size:13px; margin-bottom:4px; }
+  .step-info p  { font-size:11px; color:var(--dim); line-height:1.8; }
+
+  /* PROGRESS */
+  .progress { display:flex; gap:4px; margin-bottom:11px; }
+  .dot { height:4px; flex:1; border-radius:2px; background:#ffffff10; transition:background .3s; }
+  .dot.done    { background:var(--accent); }
+  .dot.current { background:var(--gold); }
+
+  /* CONTROLS */
+  .controls { display:flex; gap:9px; align-items:center; }
+  .btn { padding:9px 18px; border-radius:8px; border:none; cursor:pointer; font-size:12px; font-family:'Noto Sans JP',sans-serif; font-weight:700; transition:all .2s; }
+  .btn-p { background:var(--accent); color:white; }
+  .btn-s { background:#ffffff0f; color:var(--text); border:1px solid #ffffff18; }
+  .btn:disabled { opacity:.4; cursor:default; }
+  .btn:not(:disabled):hover { opacity:.85; transform:translateY(-1px); }
+  .ctr { font-size:11px; font-family:'Space Mono',monospace; color:var(--dim); margin-left:auto; }
+
+  @keyframes pulse {
+    0%,100% { box-shadow:0 0 0 0 rgba(255,215,0,.5); }
+    50%      { box-shadow:0 0 0 7px rgba(255,215,0,0); }
+  }
+  .hl { animation:pulse 1.2s infinite; border-color:var(--gold)!important; color:var(--gold)!important; }
+</style>
+</head>
+<body>
+<div class="rainbow-bar"></div>
+<header>
+  <h1>Tokyo Pride 2026 <span>ロジスティクス 動線シミュレーター</span></h1>
+</header>
+
+<div class="scene">
+  <div class="progress" id="progress"></div>
+
+  <div class="layout">
+    <!-- Zones -->
+    <div class="zone" id="z-stock">📦 弁当ストック・冷蔵庫 ｜ 🧊 飲み物クーラー</div>
+    <div class="zone" id="z-bento">🍱 弁当受付</div>
+    <div class="zone" id="z-drink">💧 水分配布</div>
+    <div class="zone" id="z-exit">出口 →</div>
+
+    <!-- Bento queue line (left column) -->
+    <div style="position:absolute;left:19px;top:145px;bottom:42px;width:2px;background:#4CAF5018;border-radius:1px"></div>
+    <!-- Drink queue line (right column) -->
+    <div style="position:absolute;right:19px;top:145px;bottom:42px;width:2px;background:#2196F318;border-radius:1px"></div>
+    <!-- Horizontal path bento→drink queue -->
+    <div style="position:absolute;top:178px;left:31px;right:31px;height:2px;background:#ffffff08"></div>
+
+    <!-- Queue labels -->
+    <div style="position:absolute;left:8px;top:148px;font-size:8px;color:#4CAF5044;font-family:'Space Mono',monospace;">弁当列</div>
+    <div style="position:absolute;right:8px;top:148px;font-size:8px;color:#2196F344;font-family:'Space Mono',monospace;text-align:right">水分列</div>
+
+    <!-- Static queue arrows -->
+    <div class="arr" style="left:12px;top:280px;color:#4CAF5030;font-size:14px">↑</div>
+    <div class="arr" style="left:12px;top:315px;color:#4CAF5030;font-size:14px">↑</div>
+    <div class="arr" style="right:13px;top:280px;color:#2196F330;font-size:14px">↑</div>
+    <div class="arr" style="right:13px;top:315px;color:#2196F330;font-size:14px">↑</div>
+
+    <!-- Dynamic arrows -->
+    <div class="arr" id="arr-right" style="top:170px;left:50%;transform:translateX(-50%);color:#FFD700bb;font-size:22px;opacity:0">→</div>
+    <div class="arr" id="arr-down2" style="top:200px;right:13px;color:#FF3A5Cbb;font-size:16px;opacity:0">↑</div>
+
+    <!-- ===== STAFF ===== -->
+    <!-- S1: 補充 (stock area left) -->
+    <div class="staff" id="s1" style="top:14px;left:30px;background:#0d2010;border-color:#4CAF50;color:#4CAF50">S1</div>
+    <div class="lbl"   id="l1" style="top:44px;left:24px;opacity:0">補充</div>
+    <!-- S2: 注文受付 (bento counter, visitor-side left) -->
+    <div class="staff" id="s2" style="top:92px;left:14px;background:#0d2010;border-color:#4CAF50;color:#4CAF50">S2</div>
+    <div class="lbl"   id="l2" style="top:122px;left:10px;opacity:0">注文受付</div>
+    <!-- S3: 取出・箸付け (bento counter, right) -->
+    <div class="staff" id="s3" style="top:92px;left:76px;background:#0d2010;border-color:#4CAF50;color:#4CAF50">S3</div>
+    <div class="lbl"   id="l3" style="top:122px;left:62px;opacity:0">取出・箸付</div>
+    <!-- S4: 取り出し (stock area right) -->
+    <div class="staff" id="s4" style="top:14px;right:28px;background:#06060f;border-color:#2196F3;color:#64B5F6">S4</div>
+    <div class="lbl"   id="l4" style="top:44px;right:22px;opacity:0">取り出し</div>
+    <!-- S5: 拭き・渡し (drink counter) -->
+    <div class="staff" id="s5" style="top:92px;right:14px;background:#06060f;border-color:#2196F3;color:#64B5F6">S5</div>
+    <div class="lbl"   id="l5" style="top:122px;right:10px;opacity:0">拭き・渡し</div>
+
+    <!-- ===== VISITORS ===== -->
+    <!-- Bento queue (left column) — static waiters -->
+    <div class="visitor" id="vb4" style="left:8px;top:510px">😊</div>
+    <div class="visitor" id="vb3" style="left:8px;top:465px">🙂</div>
+    <div class="visitor" id="vb2" style="left:8px;top:418px">😄</div>
+    <div class="visitor" id="vb1" style="left:8px;top:370px">🥰</div>
+
+    <!-- Drink queue (right column) — water-only visitors -->
+    <div class="visitor" id="vd3" style="right:8px;top:510px">🫗</div>
+    <div class="visitor" id="vd2" style="right:8px;top:465px">💦</div>
+    <div class="visitor" id="vd1" style="right:8px;top:418px">🧃</div>
+
+    <!-- Active visitor (starred) — goes through full flow -->
+    <div class="visitor" id="va" style="left:8px;top:320px;box-shadow:0 0 14px rgba(255,215,0,.7)">⭐</div>
+  </div>
+
+  <div class="step-info" id="step-info">
+    <h3>▶ スタート：待機状態</h3>
+    <p>
+      左列：弁当を受け取ってから水分へ向かう来場者<br>
+      右列：水分のみを取りに来た来場者（🫗💦🧃）<br>
+      ⭐ の動線をステップで追います。
+    </p>
+  </div>
+
+  <div class="controls">
+    <button class="btn btn-s" onclick="reset()">↩ リセット</button>
+    <button class="btn btn-p" id="next-btn" onclick="nextStep()">次のステップ ▶</button>
+    <span class="ctr" id="counter">0 / 9</span>
+  </div>
+</div>
+
+<script>
+const TOTAL = 9;
+let step = 0;
+
+const g  = id => document.getElementById(id);
+const mv = (id, left, top) => {
+  const e = g(id); if (!e) return;
+  if (left !== null) e.style.left = left;
+  if (top  !== null) e.style.top  = top;
+};
+const hl  = (id, on) => { const e = g(id); if (!e) return; on ? e.classList.add('hl') : e.classList.remove('hl'); };
+const lbl = (id, on) => { const e = g(id); if (!e) return; e.style.opacity = on ? '1' : '0'; };
+const ao  = (id, on) => { const e = g(id); if (!e) return; e.style.opacity = on ? '1' : '0'; };
+const fadeOut = id   => { setTimeout(() => { const e = g(id); if (e) e.style.opacity = '0'; }, 400); };
+
+// カウンター手前のY座標（スタッフより下、カウンターの手前）
+const BENTO_FRONT = '148px';
+const DRINK_FRONT = '148px';
+
+const steps = [
+  {
+    title: "① 両列が同時に前進・各カウンター手前へ",
+    desc: "⭐ が弁当受付カウンター手前へ。同時に水分列（右）の🫗も先頭へ進みます。",
+    run: () => {
+      mv('va',  '8px', BENTO_FRONT);
+      mv('vb1', '8px', '320px');
+      mv('vb2', '8px', '370px');
+      mv('vb3', '8px', '418px');
+      mv('vb4', '8px', '465px');
+      mv('vd1', 'calc(100% - 30px)', DRINK_FRONT);
+      mv('vd2', 'calc(100% - 30px)', '418px');
+      mv('vd3', 'calc(100% - 30px)', '465px');
+    }
+  },
+  {
+    title: "② S2：メニュー確認・注文受付",
+    desc: "S2が「弁当はA・Bがあります、どちらにしますか？」と確認。来場者が選択します。",
+    run: () => {
+      hl('s2', true); lbl('l2', true);
+    }
+  },
+  {
+    title: "③ S3：弁当を取り出して箸・おしぼりをセット",
+    desc: "S3がストックから弁当を取り出して箸・おしぼりをセット。S1が残量確認・補充を行います。",
+    run: () => {
+      hl('s2', false); lbl('l2', false);
+      hl('s3', true);  lbl('l3', true);
+      hl('s1', true);  lbl('l1', true);
+      mv('s3', '76px', '20px'); // reach to stock
+    }
+  },
+  {
+    title: "④ 弁当を手渡し",
+    desc: "S3が弁当を来場者へ手渡します。「ありがとうございます！」",
+    run: () => {
+      mv('s3', '76px', '92px');
+      hl('s3', false); lbl('l3', false);
+      hl('s1', false); lbl('l1', false);
+      ao('arr-right', true);
+    }
+  },
+  {
+    title: "⑤ ⭐ が右列へ移動・次の人（vb1）が弁当受付へ",
+    desc: "⭐ が水分列の最後尾へ横移動。同時に vb1 が弁当カウンター手前へ進み、S3が次の弁当準備に入ります。【並列処理スタート】",
+    run: () => {
+      ao('arr-right', false);
+      // ⭐ moves to back of drink queue
+      mv('va', 'calc(100% - 30px)', '555px');
+      ao('arr-down2', true);
+      // vb1 steps up to bento front, others advance
+      mv('vb1', '8px', BENTO_FRONT);
+      mv('vb2', '8px', '320px');
+      mv('vb3', '8px', '370px');
+      mv('vb4', '8px', '418px');
+      // S3 starts preparing next bento (parallel)
+      hl('s3', true); lbl('l3', true);
+    }
+  },
+  {
+    title: "⑥ 【並列】水分のみ客が受取＋vb1が弁当を受け取って水分列へ",
+    desc: "左：S3が vb1 に弁当を手渡し → vb1 は水分列の最後尾へ合流。右：S4・S5が🫗に飲み物を渡し、列が前進。2レーンが同時に動きます。",
+    run: () => {
+      ao('arr-down2', false);
+      // 右レーン：水分処理
+      hl('s4', true); lbl('l4', true);
+      hl('s5', true); lbl('l5', true);
+      mv('vd1', 'calc(50% - 11px)', '580px');
+      fadeOut('vd1');
+      mv('vd2', 'calc(100% - 30px)', DRINK_FRONT);
+      mv('vd3', 'calc(100% - 30px)', '418px');
+      mv('va',  'calc(100% - 30px)', '465px');
+      // 左レーン：vb1 が弁当を受け取って水分列の最後尾へ合流
+      setTimeout(() => {
+        hl('s3', false); lbl('l3', false);
+        // vb1 を水分列の最後尾（⭐のさらに後ろ）へ
+        mv('vb1', 'calc(100% - 30px)', '555px');
+        // 後続を1つずつ前進
+        mv('vb2', '8px', BENTO_FRONT);
+        mv('vb3', '8px', '320px');
+        mv('vb4', '8px', '370px');
+      }, 500);
+    }
+  },
+  {
+    title: "⑦ 【並列】💦・🧃が受取・⭐ と vb1 が前進・vb2 も弁当受付へ",
+    desc: "右：💦・🧃が順番に水分を受け取って退場。⭐ と合流済みの vb1 も水分列を前進。左：S3 が vb2 に次の弁当を準備します。",
+    run: () => {
+      hl('s4', false); lbl('l4', false);
+      hl('s5', false); lbl('l5', false);
+      // 右レーン：水分の連続処理
+      mv('vd2', 'calc(50% - 11px)', '580px'); fadeOut('vd2');
+      mv('vd3', 'calc(100% - 30px)', DRINK_FRONT);
+      mv('va',  'calc(100% - 30px)', '418px');
+      // vb1 も水分列を1つ前進
+      mv('vb1', 'calc(100% - 30px)', '510px');
+      setTimeout(() => {
+        mv('vd3', 'calc(50% - 11px)', '580px'); fadeOut('vd3');
+        mv('va',  'calc(100% - 30px)', DRINK_FRONT);
+        mv('vb1', 'calc(100% - 30px)', '465px');
+      }, 900);
+      // 左レーン：S3が vb2 の弁当を準備（並列）
+      hl('s3', true); lbl('l3', true);
+    }
+  },
+  {
+    title: "⑧ 【並列】⭐ が水分受取・退場／vb2 が弁当受付へ",
+    desc: "⭐ が水分を受け取って退場（弁当＋水分セット完了！）。同時に vb2 が弁当カウンター手前へ進み、S3 が次の弁当を準備します。",
+    run: () => {
+      hl('s3', false); lbl('l3', false);
+      hl('s4', true); lbl('l4', true);
+      hl('s5', true); lbl('l5', true);
+      // vb1 を1つ前進
+      mv('vb1', 'calc(100% - 30px)', '418px');
+      // vb2 を弁当受付へ
+      mv('vb2', '8px', BENTO_FRONT);
+      mv('vb3', '8px', '320px');
+      mv('vb4', '8px', '370px');
+      setTimeout(() => {
+        hl('s4', false); lbl('l4', false);
+        hl('s5', false); lbl('l5', false);
+        mv('va', 'calc(50% - 11px)', '580px');
+        fadeOut('va');
+        // S3 が次の弁当準備に入る
+        hl('s3', true); lbl('l3', true);
+      }, 600);
+    }
+  },
+  {
+    title: "⑨ 【並列】vb2 が弁当を受取・水分列へ合流／サイクル継続",
+    desc: "S3 が vb2 に弁当を手渡し → vb2 は水分列の最後尾へ。vb1 もさらに前進。動線は止まらず回り続けます。【定常運用フェーズ】",
+    run: () => {
+      // S3 が vb2 に弁当を渡す
+      hl('s3', false); lbl('l3', false);
+      // vb2 を水分列の最後尾へ合流
+      mv('vb2', 'calc(100% - 30px)', '555px');
+      // 後続も1つずつ前進
+      mv('vb3', '8px', BENTO_FRONT);
+      mv('vb4', '8px', '320px');
+      // vb1 を水分受付手前へ
+      mv('vb1', 'calc(100% - 30px)', DRINK_FRONT);
+      // S1 補充も再ハイライト（在庫管理が継続することを示唆）
+      setTimeout(() => {
+        hl('s1', true); lbl('l1', true);
+      }, 500);
+    }
+  }
+];
+
+function nextStep() {
+  if (step >= TOTAL) return;
+  steps[step].run();
+  g('step-info').innerHTML = `<h3>${steps[step].title}</h3><p>${steps[step].desc}</p>`;
+  step++;
+  g('counter').textContent = step + ' / ' + TOTAL;
+  updateProg();
+  if (step >= TOTAL) { g('next-btn').textContent = '完了 ✓'; g('next-btn').disabled = true; }
+}
+
+function reset() {
+  step = 0;
+  g('step-info').innerHTML = `<h3>▶ スタート：待機状態</h3>
+    <p>左列：弁当を受け取ってから水分へ向かう来場者<br>
+    右列：水分のみを取りに来た来場者（🫗💦🧃）<br>
+    ⭐ の動線をステップで追います。</p>`;
+  g('counter').textContent = '0 / ' + TOTAL;
+  g('next-btn').textContent = '次のステップ ▶';
+  g('next-btn').disabled = false;
+
+  ['s1','s2','s3','s4','s5'].forEach(id => hl(id, false));
+  ['l1','l2','l3','l4','l5'].forEach(id => lbl(id, false));
+  ['arr-right','arr-down2'].forEach(id => ao(id, false));
+
+  mv('s3', '76px', '92px');
+
+  mv('va',  '8px', '320px');
+  mv('vb1', '8px', '370px'); mv('vb2', '8px', '418px');
+  mv('vb3', '8px', '465px'); mv('vb4', '8px', '510px');
+
+  mv('vd1', 'calc(100% - 30px)', '418px');
+  mv('vd2', 'calc(100% - 30px)', '465px');
+  mv('vd3', 'calc(100% - 30px)', '510px');
+
+  ['va','vb1','vb2','vb3','vb4','vd1','vd2','vd3'].forEach(id => {
+    const e = g(id); if (e) e.style.opacity = '1';
+  });
+  updateProg();
+}
+
+function updateProg() {
+  const p = g('progress'); p.innerHTML = '';
+  for (let i = 0; i < TOTAL; i++) {
+    const d = document.createElement('div');
+    d.className = 'dot' + (i < step ? ' done' : i === step ? ' current' : '');
+    p.appendChild(d);
+  }
+}
+
+updateProg();
+</script>
+</body>
+</html>
