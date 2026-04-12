@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tokyo Pride 2026 – 朝の受付フロー</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700;900&family=Space+Mono:wght@400;700&display=swap');
+  :root {
+    --bg: #0d0d14; --surface: #16161f; --surface2: #1e1e2e;
+    --text: #f0f0f8; --dim: #888899; --accent: #FF3A5C;
+    --green: #4CAF50; --blue: #64B5F6; --gold: #FFD700; --orange: #FF8C00;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--bg); color: var(--text);
+    font-family: 'Noto Sans JP', sans-serif; min-height: 100vh;
+    max-width: 600px; margin: 0 auto;
+    border-left: 1px solid #ffffff08; border-right: 1px solid #ffffff08;
+  }
+  .rainbow-bar {
+    height: 4px; width: 100%; position: fixed; top: 0; left: 0; z-index: 100;
+    background: linear-gradient(90deg,#FF3A5C,#FF8C00,#FFD700,#4CAF50,#2196F3,#9C27B0);
+  }
+  header { margin-top: 4px; padding: 10px 18px 8px; border-bottom: 1px solid #ffffff10; }
+  header h1 { font-size: 11px; font-family: 'Space Mono',monospace; color: var(--dim); text-transform: uppercase; letter-spacing:.1em; }
+  header h1 span { display:block; font-size:14px; color:var(--text); font-family:'Noto Sans JP',sans-serif; margin-top:1px; }
+
+  .scene { padding: 10px 18px 12px; }
+
+  /* ---- LAYOUT ---- */
+  .layout {
+    position: relative; width: 100%; height: 320px;
+    background: var(--surface2); border-radius: 14px;
+    overflow: hidden; margin-bottom: 10px; border: 1px solid #ffffff08;
+  }
+
+  /* STATIONS */
+  .station {
+    position: absolute; border-radius: 8px;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    font-size: 10px; font-weight: 700; text-align: center;
+    transition: all .35s ease;
+  }
+  .station .icon { font-size: 20px; margin-bottom: 2px; }
+  .station .name { font-size: 10px; line-height: 1.3; }
+
+  #st-reception {
+    top: 16px; right: 12px; width: 100px; height: 90px;
+    background: #1a0a14; border: 1.5px solid rgba(255,58,92,.4); color: var(--accent);
+  }
+  #st-nametag {
+    top: 16px; right: 130px; width: 100px; height: 90px;
+    background: #1a1208; border: 1.5px solid rgba(255,140,0,.4); color: var(--orange);
+  }
+  #st-tent {
+    top: 16px; left: 12px; width: 220px; height: 270px;
+    background: #08140a; border: 1.5px solid rgba(76,175,80,.4); color: var(--green);
+    align-items: stretch; justify-content: flex-start;
+    padding: 8px;
+  }
+  #st-tent .tent-label {
+    font-size: 11px; font-weight: 700; text-align: center;
+    margin-bottom: 6px; color: var(--green);
+  }
+  #st-tent .tent-label .icon { font-size: 18px; display: block; margin-bottom: 2px; }
+  .tshirts {
+    display: flex; gap: 3px; margin-bottom: 6px;
+  }
+  .tshirts .box {
+    flex: 1; background: #0d2010; border: 1px solid rgba(76,175,80,.3);
+    border-radius: 4px; padding: 4px 0; font-size: 9px; text-align: center;
+    color: var(--green); font-weight: 700;
+  }
+  .changing {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 3px;
+  }
+  .changing .room {
+    background: #0d2010; border: 1px solid rgba(76,175,80,.3);
+    border-radius: 4px; padding: 6px 0; font-size: 9px; text-align: center;
+    color: var(--green);
+  }
+
+  /* CLOAK arrow zone */
+  #st-cloak {
+    bottom: 16px; right: 12px; width: 218px; height: 80px;
+    background: #06060f; border: 1.5px dashed rgba(100,181,246,.4); color: var(--blue);
+  }
+
+  /* STAFF */
+  .staff {
+    position: absolute; width: 22px; height: 22px;
+    background: var(--surface); border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 12px; border: 2px solid #ffffff20;
+    transition: all .3s ease; z-index: 5;
+  }
+  .staff.hl {
+    border-color: var(--gold);
+    box-shadow: 0 0 14px rgba(255,215,0,.7);
+    transform: scale(1.2);
+  }
+  #stf1 { top: 90px; right: 50px; }
+  #stf2 { top: 90px; right: 330px; }
+  #stf3 { top: 200px; right: 330px; }
+  #stf4 { top: 230px; right: 50px; }
+
+  /* VOLUNTEER avatar */
+  .vol {
+    position: absolute; width: 22px; height: 22px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px; z-index: 6;
+    transition: all .6s ease;
+    box-shadow: 0 0 14px rgba(255,215,0,.7);
+    border-radius: 50%;
+  }
+
+  /* ARROW to cloak */
+  .arrow-out {
+    position: absolute; bottom: 50px; right: 240px;
+    color: var(--blue); font-size: 18px; font-weight: 900;
+    opacity: 0; transition: opacity .3s;
+  }
+
+  /* STEP INFO */
+  .step-info {
+    background:var(--surface); border-radius:10px; padding:9px 12px;
+    margin-bottom:8px; border-left:3px solid var(--accent); min-height:60px;
+  }
+  .step-info h3 { font-size:12px; margin-bottom:3px; }
+  .step-info p  { font-size:10.5px; color:var(--dim); line-height:1.6; }
+
+  /* PROGRESS */
+  .progress { display:flex; gap:4px; margin-bottom:8px; }
+  .dot { height:4px; flex:1; border-radius:2px; background:#ffffff10; transition:background .3s; }
+  .dot.done    { background:var(--accent); }
+  .dot.current { background:var(--gold); }
+
+  /* CONTROLS */
+  .controls { display:flex; gap:9px; align-items:center; margin-bottom: 16px; }
+  .btn { padding:8px 16px; border-radius:8px; border:none; cursor:pointer; font-size:12px; font-family:'Noto Sans JP',sans-serif; font-weight:700; transition:all .2s; }
+  .btn-p { background:var(--accent); color:white; }
+  .btn-s { background:#ffffff0f; color:var(--text); border:1px solid #ffffff18; }
+  .btn:disabled { opacity:.4; cursor:default; }
+  .btn:not(:disabled):hover { opacity:.85; transform:translateY(-1px); }
+  .ctr { font-size:11px; font-family:'Space Mono',monospace; color:var(--dim); margin-left:auto; }
+
+  /* NOTES */
+  .notes {
+    background: rgba(255,140,0,.08);
+    border: 1px solid rgba(255,140,0,.3);
+    border-left: 3px solid var(--orange);
+    border-radius: 10px; padding: 12px 14px;
+  }
+  .notes h4 {
+    font-size: 12px; color: var(--orange); margin-bottom: 8px;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .notes ul { list-style: none; }
+  .notes li {
+    font-size: 11px; color: var(--text); line-height: 1.7;
+    padding-left: 14px; position: relative;
+  }
+  .notes li::before {
+    content: '・'; color: var(--orange);
+    position: absolute; left: 0;
+  }
+  .notes .meta {
+    margin-top: 8px; font-size: 10px; color: var(--dim);
+    font-family: 'Space Mono', monospace;
+  }
+</style>
+</head>
+<body>
+<div class="rainbow-bar"></div>
+
+<header>
+  <h1>Tokyo Pride 2026 / Operations<span>朝の受付フロー</span></h1>
+</header>
+
+<div class="scene">
+
+  <div class="progress" id="progress"></div>
+
+  <div class="layout">
+    <!-- 受付 -->
+    <div class="station" id="st-reception">
+      <div class="icon">📱</div>
+      <div class="name">受付<br>(QR)</div>
+    </div>
+    <!-- 名札 -->
+    <div class="station" id="st-nametag">
+      <div class="icon">✏️</div>
+      <div class="name">名札記載<br>(立位)</div>
+    </div>
+    <!-- Tシャツ＋更衣室テント -->
+    <div class="station" id="st-tent">
+      <div class="tent-label"><span class="icon">⛺</span>Tシャツ＆着替え</div>
+      <div class="tshirts">
+        <div class="box">S</div><div class="box">M</div><div class="box">L</div><div class="box">XL</div>
+      </div>
+      <div class="changing">
+        <div class="room">更衣1</div>
+        <div class="room">更衣2</div>
+        <div class="room">更衣3</div>
+        <div class="room">更衣4</div>
+      </div>
+    </div>
+    <!-- クロークへの誘導ゾーン -->
+    <div class="station" id="st-cloak">
+      <div class="icon">🗺️</div>
+      <div class="name">→ クロークへ<br>(別フロー)</div>
+    </div>
+
+    <!-- スタッフ -->
+    <div class="staff" id="stf1">①</div>
+    <div class="staff" id="stf2">②</div>
+    <div class="staff" id="stf3">③</div>
+    <div class="staff" id="stf4">④</div>
+
+    <!-- ボラ本人 -->
+    <div class="vol" id="vol" style="right:14px;top:42px">⭐</div>
+
+    <!-- クロークへの矢印 -->
+    <div class="arrow-out" id="arr-out">→</div>
+  </div>
+
+  <div class="step-info" id="step-info">
+    <h3>▶ スタート：ボラ到着</h3>
+    <p>
+      ⭐ 朝、会場入りしたボラの動きを5ステップで追います。<br>
+      ①〜④の番号は案内スタッフの配置です。
+    </p>
+  </div>
+
+  <div class="controls">
+    <button class="btn btn-s" onclick="reset()">↩ リセット</button>
+    <button class="btn btn-p" id="next-btn" onclick="nextStep()">次のステップ ▶</button>
+    <span class="ctr" id="counter">0 / 5</span>
+  </div>
+
+  <div class="notes">
+    <h4>⚠ 当日の注意事項</h4>
+    <ul>
+      <li>朝は <strong>100人超</strong> の集中が予想されます。混雑・混乱前提で焦らず案内を。</li>
+      <li>Tシャツのサイズ間違いに注意。迷っている人には積極的に声かけを。</li>
+      <li>更衣室4ブースは譲り合いを促し、Tシャツの上から羽織るだけでもOKと案内。</li>
+      <li>動線で迷ってる人を見かけたら、自分の持ち場でなくても声をかけて誘導を。</li>
+    </ul>
+    <div class="meta">案内スタッフ最低4名 / 混雑時は増員想定</div>
+  </div>
+
+</div>
+
+<script>
+const TOTAL = 5;
+let step = 0;
+
+const g  = id => document.getElementById(id);
+const mv = (id, right, top) => {
+  const e = g(id); if (!e) return;
+  if (right !== null) { e.style.left = 'auto'; e.style.right = right; }
+  if (top  !== null) e.style.top  = top;
+};
+const hl = (id, on) => { const e = g(id); if (!e) return; on ? e.classList.add('hl') : e.classList.remove('hl'); };
+const ao = (id, on) => { const e = g(id); if (!e) return; e.style.opacity = on ? '1' : '0'; };
+
+const steps = [
+  {
+    title: "① 受付（QR読み取り）",
+    desc: "ボラがスタッフ①にスマホのQRを提示。読み取り完了したら『名札書いてTシャツ受け取ってね』と案内。",
+    run: () => {
+      hl('stf1', true);
+      mv('vol', '52px', '42px');
+    }
+  },
+  {
+    title: "② 名札記載（本人記入）",
+    desc: "名札机へ移動。立ったまま、好きな色のペンで自分の名前を記入。スタッフ①が引き続き案内。",
+    run: () => {
+      mv('vol', '170px', '42px');
+    }
+  },
+  {
+    title: "③ Tシャツ取得（セルフピック）",
+    desc: "テントへ移動。S/M/L/XL のサイズ別段ボールから自分でTシャツを取得。スタッフ②が『更衣室かその辺で着替えてね』と案内。",
+    run: () => {
+      hl('stf1', false);
+      hl('stf2', true);
+      mv('vol', '330px', '64px');
+    }
+  },
+  {
+    title: "④ 着替え（更衣室 or その場）",
+    desc: "更衣室4ブースへ。スタッフ③が空き状況を案内。Tシャツの上から羽織るだけの人はその場でOK。",
+    run: () => {
+      hl('stf2', false);
+      hl('stf3', true);
+      mv('vol', '330px', '160px');
+    }
+  },
+  {
+    title: "⑤ クロークへ誘導",
+    desc: "着替え完了後、テントを出てクロークエリアへ。スタッフ④が『クロークに荷物預けたらマップ受け取ってね』と案内。クロークの詳細フローは別ページへ。",
+    run: () => {
+      hl('stf3', false);
+      hl('stf4', true);
+      mv('vol', '110px', '232px');
+      ao('arr-out', true);
+    }
+  }
+];
+
+function nextStep() {
+  if (step >= TOTAL) return;
+  steps[step].run();
+  g('step-info').innerHTML = `<h3>${steps[step].title}</h3><p>${steps[step].desc}</p>`;
+  step++;
+  g('counter').textContent = step + ' / ' + TOTAL;
+  updateProg();
+  if (step >= TOTAL) { g('next-btn').textContent = '完了 ✓'; g('next-btn').disabled = true; }
+}
+
+function reset() {
+  step = 0;
+  g('step-info').innerHTML = `<h3>▶ スタート：ボラ到着</h3>
+    <p>⭐ 朝、会場入りしたボラの動きを5ステップで追います。<br>
+    ①〜④の番号は案内スタッフの配置です。</p>`;
+  g('counter').textContent = '0 / ' + TOTAL;
+  g('next-btn').textContent = '次のステップ ▶';
+  g('next-btn').disabled = false;
+  ['stf1','stf2','stf3','stf4'].forEach(id => hl(id, false));
+  ao('arr-out', false);
+  mv('vol', '14px', '42px');
+  updateProg();
+}
+
+function updateProg() {
+  const p = g('progress'); p.innerHTML = '';
+  for (let i = 0; i < TOTAL; i++) {
+    const d = document.createElement('div');
+    d.className = 'dot' + (i < step ? ' done' : i === step ? ' current' : '');
+    p.appendChild(d);
+  }
+}
+
+updateProg();
+</script>
+</body>
+</html>
