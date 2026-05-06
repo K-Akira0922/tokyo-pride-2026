@@ -60,9 +60,7 @@
     border-color: #ffffff28;
     background: var(--surface2);
   }
-  .card.live {
-    border-left: 3px solid var(--accent);
-  }
+  .card.live { border-left: 3px solid var(--accent); }
   .card.placeholder {
     border-left: 3px solid #ffffff18;
     opacity: .65; cursor: default;
@@ -71,9 +69,7 @@
     display: flex; align-items: center; justify-content: space-between;
     gap: 10px; margin-bottom: 6px;
   }
-  .card h2 {
-    font-size: 16px; font-weight: 700; line-height: 1.4;
-  }
+  .card h2 { font-size: 16px; font-weight: 700; line-height: 1.4; }
   .card .badge {
     flex-shrink: 0;
     font-size: 10px; font-family: 'Space Mono', monospace;
@@ -88,16 +84,12 @@
     background: #ffffff08; color: var(--dim);
     border: 1px solid #ffffff18;
   }
-  .card p {
-    font-size: 13px; color: var(--dim); line-height: 1.6;
-  }
+  .card p { font-size: 13px; color: var(--dim); line-height: 1.6; }
   .card .meta {
     margin-top: 10px; font-size: 11px; font-family: 'Space Mono', monospace;
     color: var(--dim); display: flex; align-items: center; gap: 6px;
   }
-  .card .meta .arrow {
-    color: var(--accent); font-weight: 700;
-  }
+  .card .meta .arrow { color: var(--accent); font-weight: 700; }
 
   footer {
     margin: 40px 16px 0; padding-top: 20px;
@@ -123,14 +115,14 @@
 <main>
   <div class="section-label">▶ 利用可能</div>
 
-  <a class="card live" href="pride_flow.html">
+  <a class="card live" href="timeline.html">
     <div class="top">
-      <h2>お弁当配布フロー</h2>
+      <h2>当日オペレーション スケジュール</h2>
       <span class="badge live">Live</span>
     </div>
     <p>
-      弁当・水分配布カウンターの動線を9ステップで可視化。
-      お弁当の受取りから水分配布までの動きをアニメーションで表現
+      入場・クローク・水分・弁当・退場の稼働時間と
+      予想混雑時間帯をガントチャートで一覧表示。
     </p>
     <div class="meta"><span class="arrow">→</span> 開く</div>
   </a>
@@ -143,6 +135,18 @@
     <p>
       受付〜名札配布〜Tシャツ配布〜着替え〜クロークまでの
       朝イチの動線を5ステップで可視化。
+    </p>
+    <div class="meta"><span class="arrow">→</span> 開く</div>
+  </a>
+
+  <a class="card live" href="pride_flow.html">
+    <div class="top">
+      <h2>お弁当配布フロー</h2>
+      <span class="badge live">Live</span>
+    </div>
+    <p>
+      弁当・水分配布カウンターの動線を9ステップで可視化。
+      お弁当の受取りから水分配布までの動きをアニメーションで表現
     </p>
     <div class="meta"><span class="arrow">→</span> 開く</div>
   </a>
