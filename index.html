@@ -56,34 +56,21 @@
     transition: transform .15s ease, border-color .15s ease, background .15s ease;
   }
   .card.live:hover, .card.live:active {
-    transform: translateY(-1px);
-    border-color: #ffffff28;
-    background: var(--surface2);
+    transform: translateY(-1px); border-color: #ffffff28; background: var(--surface2);
   }
   .card.live { border-left: 3px solid var(--accent); }
-  .card.placeholder {
-    border-left: 3px solid #ffffff18;
-    opacity: .65; cursor: default;
-  }
+  .card.placeholder { border-left: 3px solid #ffffff18; opacity: .65; cursor: default; }
   .card .top {
     display: flex; align-items: center; justify-content: space-between;
     gap: 10px; margin-bottom: 6px;
   }
   .card h2 { font-size: 16px; font-weight: 700; line-height: 1.4; }
   .card .badge {
-    flex-shrink: 0;
-    font-size: 10px; font-family: 'Space Mono', monospace;
-    padding: 3px 8px; border-radius: 10px;
-    text-transform: uppercase; letter-spacing: .08em;
+    flex-shrink: 0; font-size: 10px; font-family: 'Space Mono', monospace;
+    padding: 3px 8px; border-radius: 10px; text-transform: uppercase; letter-spacing: .08em;
   }
-  .badge.live {
-    background: rgba(255,58,92,.15); color: var(--accent);
-    border: 1px solid rgba(255,58,92,.35);
-  }
-  .badge.soon {
-    background: #ffffff08; color: var(--dim);
-    border: 1px solid #ffffff18;
-  }
+  .badge.live { background: rgba(255,58,92,.15); color: var(--accent); border: 1px solid rgba(255,58,92,.35); }
+  .badge.soon { background: #ffffff08; color: var(--dim); border: 1px solid #ffffff18; }
   .card p { font-size: 13px; color: var(--dim); line-height: 1.6; }
   .card .meta {
     margin-top: 10px; font-size: 11px; font-family: 'Space Mono', monospace;
@@ -91,11 +78,78 @@
   }
   .card .meta .arrow { color: var(--accent); font-weight: 700; }
 
+  /* ─── 掲示板 ─── */
+  .board-wrap {
+    background: var(--surface); border: 1px solid #ffffff10;
+    border-radius: 14px; overflow: hidden;
+  }
+  .board-head {
+    padding: 14px 16px 12px; border-bottom: 1px solid #ffffff0a;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .board-head-left { display: flex; align-items: center; gap: 10px; flex: 1; }
+  .board-head h2 { font-size: 15px; font-weight: 700; }
+  .board-count {
+    font-size: 10px; font-family: 'Space Mono', monospace; color: var(--dim);
+    background: #ffffff08; padding: 2px 8px; border-radius: 10px; border: 1px solid #ffffff12;
+  }
+  .btn-refresh {
+    background: none; border: 1px solid #ffffff18; color: var(--dim);
+    font-size: 11px; font-family: 'Space Mono', monospace;
+    padding: 5px 10px; border-radius: 7px; cursor: pointer;
+    transition: all .2s; flex-shrink: 0;
+  }
+  .btn-refresh:hover { background: #ffffff0a; color: var(--text); }
+  .ri { display: inline-block; }
+  .spinning .ri { animation: spin .7s linear infinite; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .board-posts { max-height: 400px; overflow-y: auto; }
+  .board-posts::-webkit-scrollbar { width: 4px; }
+  .board-posts::-webkit-scrollbar-thumb { background: #ffffff15; border-radius: 2px; }
+
+  .post { padding: 12px 16px; border-bottom: 1px solid #ffffff07; animation: fi .3s ease; }
+  .post:last-child { border-bottom: none; }
+  @keyframes fi { from { opacity:0; transform:translateY(3px); } to { opacity:1; transform:translateY(0); } }
+
+  .post-header { display: flex; align-items: center; gap: 8px; margin-bottom: 5px; }
+  .post-avatar {
+    width: 26px; height: 26px; border-radius: 50%; flex-shrink: 0;
+    background: linear-gradient(135deg,#FF3A5C22,#9C27B022);
+    border: 1px solid #ffffff15;
+    display: flex; align-items: center; justify-content: center; font-size: 13px;
+  }
+  .post-name { font-size: 12px; font-weight: 700; }
+  .post-name.anon { color: var(--dim); font-weight: 400; font-style: italic; }
+  .post-time { margin-left: auto; font-size: 10px; font-family: 'Space Mono',monospace; color: var(--dim); white-space: nowrap; }
+  .post-body { font-size: 12.5px; color: #ccccd8; line-height: 1.7; padding-left: 34px; white-space: pre-wrap; word-break: break-all; }
+
+  .board-empty { padding: 36px 16px; text-align: center; font-size: 12px; color: var(--dim); font-family: 'Space Mono',monospace; }
+  .board-loading {
+    padding: 28px 16px; text-align: center; font-size: 11px; color: var(--dim);
+    font-family: 'Space Mono',monospace; display: flex; align-items: center; justify-content: center; gap: 10px;
+  }
+  .dp { display: flex; gap: 4px; }
+  .dp span { width: 5px; height: 5px; border-radius: 50%; background: var(--accent); animation: pu 1.2s ease infinite; }
+  .dp span:nth-child(2) { animation-delay:.2s; }
+  .dp span:nth-child(3) { animation-delay:.4s; }
+  @keyframes pu { 0%,80%,100%{opacity:.2} 40%{opacity:1} }
+  .board-error { padding: 20px 16px; text-align: center; font-size: 11px; color: var(--accent); font-family: 'Space Mono',monospace; }
+
+  .board-foot { padding: 12px 16px; border-top: 1px solid #ffffff0a; }
+  .btn-post {
+    display: flex; align-items: center; justify-content: center; gap: 7px;
+    width: 100%; padding: 11px;
+    background: rgba(255,58,92,.12); border: 1px solid rgba(255,58,92,.3);
+    border-radius: 10px; color: var(--accent);
+    font-size: 13px; font-weight: 700; font-family: 'Noto Sans JP',sans-serif;
+    text-decoration: none; transition: all .2s;
+  }
+  .btn-post:hover { background: rgba(255,58,92,.22); transform: translateY(-1px); }
+
   footer {
-    margin: 40px 16px 0; padding-top: 20px;
-    border-top: 1px solid #ffffff10;
-    text-align: center; font-size: 11px; color: var(--dim);
-    font-family: 'Space Mono', monospace;
+    margin: 40px 16px 0; padding-top: 20px; border-top: 1px solid #ffffff10;
+    text-align: center; font-size: 11px; color: var(--dim); font-family: 'Space Mono',monospace;
   }
   footer .heart { color: var(--accent); }
 </style>
@@ -116,58 +170,140 @@
   <div class="section-label">▶ 利用可能</div>
 
   <a class="card live" href="timeline.html">
-    <div class="top">
-      <h2>当日オペレーション スケジュール</h2>
-      <span class="badge live">Live</span>
-    </div>
-    <p>
-      入場・クローク・水分・弁当・退場の稼働時間と
-      予想混雑時間帯をガントチャートで一覧表示。
-    </p>
+    <div class="top"><h2>当日オペレーション スケジュール</h2><span class="badge live">Live</span></div>
+    <p>入場・クローク・水分・弁当・退場の稼働時間と予想混雑時間帯をガントチャートで一覧表示。</p>
     <div class="meta"><span class="arrow">→</span> 開く</div>
   </a>
 
   <a class="card live" href="morning_flow.html">
-    <div class="top">
-      <h2>朝の受付フロー</h2>
-      <span class="badge live">Live</span>
-    </div>
-    <p>
-      受付〜名札配布〜Tシャツ配布〜着替え〜クロークまでの
-      朝イチの動線を5ステップで可視化。
-    </p>
+    <div class="top"><h2>朝の受付フロー</h2><span class="badge live">Live</span></div>
+    <p>受付〜名札配布〜Tシャツ配布〜着替え〜クロークまでの朝イチの動線を5ステップで可視化。</p>
     <div class="meta"><span class="arrow">→</span> 開く</div>
   </a>
 
   <a class="card live" href="pride_flow.html">
-    <div class="top">
-      <h2>お弁当配布フロー</h2>
-      <span class="badge live">Live</span>
-    </div>
-    <p>
-      弁当・水分配布カウンターの動線を9ステップで可視化。
-      お弁当の受取りから水分配布までの動きをアニメーションで表現
-    </p>
+    <div class="top"><h2>お弁当配布フロー</h2><span class="badge live">Live</span></div>
+    <p>弁当・水分配布カウンターの動線を9ステップで可視化。お弁当の受取りから水分配布までの動きをアニメーションで表現。</p>
     <div class="meta"><span class="arrow">→</span> 開く</div>
   </a>
 
   <div class="section-label">▶ 準備中</div>
 
   <div class="card placeholder">
-    <div class="top">
-      <h2>クローク受け渡しフロー</h2>
-      <span class="badge soon">Coming Soon</span>
-    </div>
-    <p>
-      預かり〜タグ管理〜返却までの手順と、混雑時の捌き方を
-      ビジュアルでまとめます。
-    </p>
+    <div class="top"><h2>クローク受け渡しフロー</h2><span class="badge soon">Coming Soon</span></div>
+    <p>預かり〜タグ管理〜返却までの手順と、混雑時の捌き方をビジュアルでまとめます。</p>
   </div>
+
+  <div class="section-label">▶ 掲示板</div>
+
+  <div class="board-wrap">
+    <div class="board-head">
+      <div class="board-head-left">
+        <h2>💬 みんなの掲示板</h2>
+        <span class="board-count" id="post-count">-- 件</span>
+      </div>
+      <button class="btn-refresh" id="btn-refresh" onclick="loadPosts()">
+        <span class="ri">↻</span> 更新
+      </button>
+    </div>
+
+    <div class="board-posts" id="board-posts">
+      <div class="board-loading">
+        <div class="dp"><span></span><span></span><span></span></div>
+        読み込み中...
+      </div>
+    </div>
+
+    <div class="board-foot">
+      <a class="btn-post"
+         href="https://docs.google.com/forms/d/1tF5FQFlNO9Ta9hYXSCVZRYDQElNC6_p1_JhlRhOUJ-c/viewform"
+         target="_blank">
+        ✏️ 投稿する
+      </a>
+    </div>
+  </div>
+
 </main>
 
 <footer>
   Made with <span class="heart">♥</span> for Tokyo Pride 2026 Volunteers
 </footer>
 
+<script>
+const SHEET_ID  = '1yIS3yruL62gpb0jJ1_GAnF_Bds3dTzzu1bt2Dkw5lT4';
+const SHEET_GID = '1891475902';
+const API_URL   = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&gid=${SHEET_GID}`;
+
+function formatDate(v, f) {
+  if (f) return f; // gviz がフォーマット済み文字列を返す場合はそちらを優先
+  if (!v) return '';
+  const m = String(v).match(/Date\((\d+),(\d+),(\d+),(\d+),(\d+)/);
+  if (m) {
+    const d = new Date(+m[1], +m[2], +m[3], +m[4], +m[5]);
+    return d.toLocaleString('ja-JP', { month:'numeric', day:'numeric', hour:'2-digit', minute:'2-digit' });
+  }
+  return String(v);
+}
+
+const EMOJIS = ['🌈','🌸','⭐','🌺','🎵','🦋','🌟','💫','🎀','🌻'];
+function avatar(name) {
+  if (!name) return '👤';
+  let n = 0; for (const c of name) n += c.charCodeAt(0);
+  return EMOJIS[n % EMOJIS.length];
+}
+
+function esc(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+async function loadPosts() {
+  const container = document.getElementById('board-posts');
+  const btn       = document.getElementById('btn-refresh');
+  const counter   = document.getElementById('post-count');
+
+  btn.classList.add('spinning');
+  container.innerHTML = `<div class="board-loading"><div class="dp"><span></span><span></span><span></span></div>読み込み中...</div>`;
+
+  try {
+    const res  = await fetch(API_URL + '&t=' + Date.now());
+    const text = await res.text();
+    const json = JSON.parse(text.replace(/^[^(]+\(/, '').replace(/\);?\s*$/, ''));
+    const rows = json?.table?.rows ?? [];
+
+    const posts = rows
+      .map(r => ({
+        timeFmt: formatDate(r.c?.[0]?.v, r.c?.[0]?.f),
+        name:    r.c?.[1]?.v ?? '',
+        msg:     r.c?.[2]?.v ?? '',
+      }))
+      .filter(p => p.msg.trim() !== '')
+      .reverse();
+
+    counter.textContent = posts.length + ' 件';
+
+    if (posts.length === 0) {
+      container.innerHTML = `<div class="board-empty">まだ投稿はありません。<br>最初のメッセージを書いてみよう！</div>`;
+    } else {
+      container.innerHTML = posts.map(p => `
+        <div class="post">
+          <div class="post-header">
+            <div class="post-avatar">${avatar(p.name)}</div>
+            <span class="post-name${p.name ? '' : ' anon'}">${p.name ? esc(p.name) : '匿名'}</span>
+            <span class="post-time">${esc(p.timeFmt)}</span>
+          </div>
+          <div class="post-body">${esc(p.msg)}</div>
+        </div>`).join('');
+    }
+  } catch (e) {
+    counter.textContent = '-- 件';
+    container.innerHTML = `<div class="board-error">⚠ 読み込みに失敗しました。更新ボタンを押してください。</div>`;
+  } finally {
+    btn.classList.remove('spinning');
+  }
+}
+
+loadPosts();
+</script>
 </body>
+</html>
 </html>
