@@ -146,7 +146,15 @@
   .ctr { font-size:11px; font-family:'Space Mono',monospace; color:var(--dim); margin-left:auto; }
 
   /* NOTES */
-  .notes {
+  .nav-links { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 16px; }
+  .nav-link {
+    display: inline-flex; align-items: center; gap: 5px;
+    padding: 7px 12px; border-radius: 8px; text-decoration: none;
+    background: #ffffff09; border: 1px solid #ffffff12;
+    color: var(--text); font-size: 11px; font-weight: 700; transition: all .2s;
+  }
+  .nav-link:hover { background: #ffffff16; transform: translateY(-1px); }
+
     background: rgba(255,140,0,.08);
     border: 1px solid rgba(255,140,0,.3);
     border-left: 3px solid var(--orange);
@@ -248,6 +256,12 @@
       <li>動線で迷ってる人を見かけたら、自分の持ち場でなくても声をかけて誘導を。</li>
     </ul>
     <div class="meta">案内スタッフ最低4名 / 混雑時は増員想定</div>
+  </div>
+
+  <div class="nav-links">
+    <a class="nav-link" href="index.html">← トップに戻る</a>
+    <a class="nav-link" href="timeline.html">📅 スケジュール</a>
+    <a class="nav-link" href="pride_flow.html">💧 弁当・水分 動線</a>
   </div>
 
 </div>
