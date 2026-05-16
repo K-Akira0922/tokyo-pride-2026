@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>お弁当＆給水担当マニュアル</title>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700;900&family=Zen+Maru+Gothic:wght@400;700;900&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --purple: #8B6BB1;
+      --light-purple: #EDE5F5;
+      --soft-purple: #C4A8E0;
+      --accent: #F5A623;
+      --text: #3D2B5E;
+      --bg: #FAFAFA;
+      --warning-bg: #FFF3E0;
+      --warning-border: #F5A623;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Zen Maru Gothic', 'Noto Sans JP', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    /* ヘッダー */
+    .page-header {
+      text-align: center;
+      padding: 32px 20px 24px;
+      background: linear-gradient(135deg, #8B6BB1 0%, #C4A8E0 100%);
+      border-radius: 20px;
+      margin-bottom: 12px;
+      color: white;
+    }
+
+    .page-header .rainbow-bar {
+      display: flex;
+      height: 6px;
+      border-radius: 3px;
+      overflow: hidden;
+      margin-bottom: 20px;
+    }
+
+    .rainbow-bar span {
+      flex: 1;
+    }
+
+    .page-header h1 {
+      font-size: 2rem;
+      font-weight: 900;
+      letter-spacing: 0.05em;
+      line-height: 1.3;
+      text-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    }
+
+    .page-header .subtitle {
+      font-size: 0.9rem;
+      margin-top: 8px;
+      opacity: 0.85;
+    }
+
+    /* 各セクション */
+    .section {
+      background: white;
+      border-radius: 20px;
+      margin-bottom: 28px;
+      overflow: hidden;
+      box-shadow: 0 4px 16px rgba(139, 107, 177, 0.12);
+    }
+
+    .section-img {
+      width: 100%;
+      display: block;
+      border-bottom: 3px solid var(--light-purple);
+    }
+
+    /* 画像未生成の場合のプレースホルダー */
+    .section-img-placeholder {
+      width: 100%;
+      height: 200px;
+      background: var(--light-purple);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1rem;
+      color: var(--soft-purple);
+      border-bottom: 3px solid var(--light-purple);
+    }
+
+    .section-content {
+      padding: 24px 28px 28px;
+    }
+
+    .section-title {
+      font-size: 1.4rem;
+      font-weight: 900;
+      color: var(--purple);
+      margin-bottom: 14px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      line-height: 1.4;
+    }
+
+    .section-body {
+      font-size: 0.95rem;
+      line-height: 1.9;
+      color: #4A3A6A;
+    }
+
+    .section-body p {
+      margin-bottom: 10px;
+    }
+
+    .section-body p:last-child {
+      margin-bottom: 0;
+    }
+
+    /* 強調テキスト */
+    strong {
+      color: var(--purple);
+      font-weight: 700;
+    }
+
+    /* 注意ボックス */
+    .warning-box {
+      background: var(--warning-bg);
+      border-left: 5px solid var(--warning-border);
+      border-radius: 0 12px 12px 0;
+      padding: 14px 18px;
+      margin-top: 14px;
+      font-size: 0.9rem;
+      line-height: 1.7;
+    }
+
+    /* 締めの言葉 */
+    .closing-quote {
+      background: linear-gradient(135deg, #8B6BB1 0%, #C4A8E0 100%);
+      border-radius: 16px;
+      padding: 20px 24px;
+      margin-top: 16px;
+      color: white;
+      font-size: 0.95rem;
+      line-height: 1.8;
+      font-weight: 700;
+      text-align: center;
+    }
+
+    /* フッター */
+    .page-footer {
+      text-align: center;
+      padding: 20px;
+      font-size: 0.8rem;
+      color: var(--soft-purple);
+    }
+
+    /* 印刷対応 */
+    @media print {
+      body {
+        padding: 0;
+        max-width: 100%;
+        background: white;
+      }
+
+      .section {
+        box-shadow: none;
+        border: 1px solid #DDD;
+        break-inside: avoid;
+        margin-bottom: 20px;
+      }
+
+      .page-header {
+        background: var(--purple) !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+
+      .closing-quote {
+        background: var(--purple) !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+
+      .warning-box {
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ヘッダー -->
+  <header class="page-header">
+    <div class="rainbow-bar">
+      <span style="background:#E40303"></span>
+      <span style="background:#FF8C00"></span>
+      <span style="background:#FFED00"></span>
+      <span style="background:#008026"></span>
+      <span style="background:#004DFF"></span>
+      <span style="background:#750787"></span>
+    </div>
+    <h1>🍱 お弁当＆給水担当<br>マニュアル</h1>
+    <p class="subtitle">Tokyo Rainbow Pride ボランティア統括セクション</p>
+  </header>
+
+  <!-- セクション1：導入 -->
+  <section class="section">
+    <img class="section-img" src="お弁当１.webp" alt="お弁当と給水の説明をするキャラクター">
+    <div class="section-content">
+      <h2 class="section-title">🍱 お弁当＆給水ってなにするの？</h2>
+      <div class="section-body">
+        <p>全ボランティアのお昼ごはん（お弁当）と飲み物を配るお仕事です！</p>
+        <p>お弁当は<strong>1人1個</strong>、飲み物は<strong>何度でもOK</strong>🙆</p>
+        <p>暑い季節の開催なので、みんなにどんどん水分を取ってもらって脱水・熱中症を予防するのが大事なミッションです。</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- セクション2：受け取り -->
+  <section class="section">
+    <img class="section-img" src="お弁当２.webp" alt="お弁当を受け取るキャラクター">
+    <div class="section-content">
+      <h2 class="section-title">📦 お弁当はどこにあるの？</h2>
+      <div class="section-body">
+        <p>お弁当は時間を分けて<strong>3回</strong>、業者さんが届けてくれます。</p>
+        <p>いろんなお店から届くので、<strong>何便に何が届くか事前にチェック</strong>しておこう！</p>
+        <p>到着したら連絡が来るので、取りに向かいます。</p>
+        <div class="warning-box">
+          ⚠️ ボランティア全員分なので量が多いです。無理せずみんなで手分けして運びましょう！
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- セクション3：冷蔵庫 -->
+  <section class="section">
+    <img class="section-img" src="お弁当３.webp" alt="冷蔵庫にお弁当を収納するキャラクター">
+    <div class="section-content">
+      <h2 class="section-title">🧊 大っきい冷蔵庫！</h2>
+      <div class="section-body">
+        <p>テントにお弁当を運んだら<strong>すぐ冷蔵庫へ</strong>！</p>
+        <p>暑い時期なので保管状態は要注意。ボランティア全員の健康がかかってます💪</p>
+        <p>冷蔵庫に入れるときは<strong>写真を貼り付けて</strong>、どこに何のお弁当が入ってるか一目でわかるようにしておくと便利です🗂️</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- セクション4：配布 -->
+  <section class="section">
+    <img class="section-img" src="お弁当４.webp" alt="お弁当を配るキャラクター">
+    <div class="section-content">
+      <h2 class="section-title">🍱 配るよー！</h2>
+      <div class="section-body">
+        <p>メインイベント！みんなが楽しみにしてるお弁当を配ります。</p>
+        <p>休憩時間はセクションによってバラバラなので、<strong>とっっても忙しい</strong>です。</p>
+        <p>並んでもらって → 選んでもらって → 冷蔵庫から取り出して → お箸やソースも必要なら一緒に渡す。</p>
+        <p>その間にも<strong>次の便のお弁当が到着！</strong> 急いで取りに行って冷蔵庫にしまって……</p>
+        <p>チームプレーの見せどころです🔥<br>一人一人の力を合わせて、TRPを支えるボランティアをみんなの力で元気にしましょう！</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- セクション5：廃棄（画像未生成） -->
+  <section class="section">
+    <div class="section-img-placeholder">🖼️ 画像準備中</div>
+    <div class="section-content">
+      <h2 class="section-title">🗑️ 配布時間が過ぎたお弁当はどうするの？</h2>
+      <div class="section-body">
+        <p>もったいないと思うけど、<strong>配布から2時間が過ぎたら破棄</strong>してください。</p>
+        <p>みんなの健康が何より最優先です！</p>
+        <p>6月はもう暑い☀️ 時間が過ぎたお弁当は段ボールにまとめて、次の便のために<strong>冷蔵庫のスペースを確保</strong>しておきましょう。</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- セクション6：給水 -->
+  <section class="section">
+    <img class="section-img" src="お弁当５.webp" alt="給水対応をするキャラクター">
+    <div class="section-content">
+      <h2 class="section-title">💧 給水は？</h2>
+      <div class="section-body">
+        <p>お弁当の横のスペースが水分配布エリアです。</p>
+        <p><strong>ドブ漬け</strong>と呼んでる大きい容器に氷とペットボトル飲料を入れてキンキンに冷やします🧊</p>
+        <p>暑い中がんばってるみんなに「<strong>どれにしますか？</strong>」と聞いて、タオルで拭いてから渡してあげてください。</p>
+        <p>常に冷えたものを渡せるように、減ってきたら<strong>片方のドブ漬けに入れ替えて</strong>、空いたスペースにどんどん追加していきましょう。</p>
+        <p>暑い中ぬるいスポーツ飲料は悲しいです😢</p>
+        <p>「いっぱい水分取ってくださいね！」「無くなったらどんどん来てください！」<br>そんな一声が、もうひと踏ん張りの力になるはずです。</p>
+        <div class="closing-quote">
+          ボランティア統括は、みんなの体調と心を支えられるセクションだと私は信じています。
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 締め画像 -->
+  <div style="text-align:center; padding: 8px 0 24px;">
+    <img src="お弁当７.webp" alt="一緒にがんばろう！" style="width:100%; max-width:600px; display:inline-block;">
+  </div>
+
+  <footer class="page-footer">
+    Tokyo Rainbow Pride ボランティア統括セクション
+  </footer>
+
+</body>
+</html>
