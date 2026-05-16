@@ -175,6 +175,12 @@
     <div class="meta"><span class="arrow">→</span> 開く</div>
   </a>
 
+  <a class="card live" href="bento_manual.html">
+    <div class="top"><h2>🍱 お弁当＆給水 担当マニュアル</h2><span class="badge live">Live</span></div>
+    <p>お弁当の受け取り・冷蔵管理・配布と給水対応の流れをイラストつきで解説。</p>
+    <div class="meta"><span class="arrow">→</span> 開く</div>
+  </a>
+
   <a class="card live" href="morning_flow.html">
     <div class="top"><h2>朝の受付フロー</h2><span class="badge live">Live</span></div>
     <p>受付〜名札配布〜Tシャツ配布〜着替え〜クロークまでの朝イチの動線を5ステップで可視化。</p>
@@ -235,7 +241,7 @@ const SHEET_GID = '1891475902';
 const API_URL   = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&gid=${SHEET_GID}`;
 
 function formatDate(v, f) {
-  if (f) return f; // gviz がフォーマット済み文字列を返す場合はそちらを優先
+  if (f) return f;
   if (!v) return '';
   const m = String(v).match(/Date\((\d+),(\d+),(\d+),(\d+),(\d+)/);
   if (m) {
@@ -305,5 +311,4 @@ async function loadPosts() {
 loadPosts();
 </script>
 </body>
-</html>
 </html>
