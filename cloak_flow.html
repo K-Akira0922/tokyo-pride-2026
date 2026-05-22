@@ -528,8 +528,8 @@ const stepsIn = [
     }
   },
   {
-    title: "② A1・B1 が同時にタグを発行",
-    desc:  "A1が「A-6番です！」、B1が「B-4番です！」と同時にタグを荷物に取り付け、半券を本人へ渡す。声出し確認で番号ミスを防ぐ。",
+    title: "② A1・B1 がタグを発行",
+    desc:  "A1が「A-6番です！」、B1が「B-4番です！」タグを荷物に取り付け、半券を本人へ渡す。声出し確認で番号ミスを防ぐと同時に本人へ半券の写真を撮って保存。紛失注意を呼び掛ける。",
     run: () => {
       ao('arr-A-cnt', false); ao('arr-B-cnt', false);
       hl('stA_uketsuke', false); hl('stB_uketsuke', false);
@@ -540,8 +540,8 @@ const stepsIn = [
     }
   },
   {
-    title: "③ A2・B2 が同時に棚へ運ぶ",
-    desc:  "A2が左のA棚へ、B2が右のB棚へ、それぞれ同時に荷物を運ぶ。A1・B1はすぐ次のお客さんの対応へ。これが4人体制のメリット！",
+    title: "③ A2・B2 棚へ収納",
+    desc:  "A2が左のA棚へ、B2が右のB棚へ、それぞれ同時に荷物を運ぶ。A1・B1はすぐ次のお客さんの対応へ。",
     run: () => {
       hl('stA_haichi', true);
       hl('stB_haichi', true);
@@ -556,8 +556,8 @@ const stepsIn = [
     }
   },
   {
-    title: "④ A-6・B-4 に同時に収納完了！",
-    desc:  "A2がA棚のA-6番、B2がB棚のB-4番に同時に収納。棚の状態が更新される。ボランティアは半券を持って持ち場へ向かう。",
+    title: "④ A-6・B-4 収納完了！",
+    desc:  "A2がA棚のA-6番、B2がB棚のB-4番に収納。棚の状態が更新される。ボランティアは半券を持って水分を受け取りに。",
     run: () => {
       ao('arr-to-shelfA', false); ao('arr-to-shelfB', false);
       hl('stA_haichi', false); hl('stB_haichi', false);
@@ -585,8 +585,8 @@ const stepsIn = [
 const TOTAL_OUT = 5;
 const stepsOut = [
   {
-    title: "① A1・B1 が同時に返却対応",
-    desc:  "⭐がA-6の半券を持ってA1へ、🌟がB-4の半券を持ってB1へ、同時に来場。それぞれ別のスタッフが対応するので待ち時間ゼロ！",
+    title: "① A1・B1 が返却対応",
+    desc:  "⭐がA-6の半券を持ってA1へ、🌟がB-4の半券を持ってB1へ、受付。それぞれ別のスタッフが対応するので待ち時間短縮",
     run: () => {
       mv('vol',  { left:'32%',  bottom:'72px' });
       mv('vol2', { right:'32%', bottom:'72px', opacity:1 });
@@ -598,8 +598,8 @@ const stepsOut = [
     }
   },
   {
-    title: "② A1・B1 が同時に番号確認・A2・B2 に指示",
-    desc:  "「A-6番ですね！」「B-4番ですね！」と同時に声出し確認。A1→A2、B1→B2へ「〇〇番の荷物お願いします！」と同時に指示を出す。",
+    title: "② A1・B1 番号確認・A2・B2 に指示",
+    desc:  "「A-6番ですね！」「B-4番ですね！」声出し確認。A1→A2、B1→B2へ「〇〇番の荷物お願いします！」と指示を出す。",
     run: () => {
       ao('arr-A-cnt', false); ao('arr-B-cnt', false);
       hl('stA_uketsuke', false); hl('stB_uketsuke', false);
@@ -608,8 +608,8 @@ const stepsOut = [
     }
   },
   {
-    title: "③ A2・B2 が同時に棚から取り出す",
-    desc:  "A2がA棚A-6から、B2がB棚B-4から、同時に荷物を取り出す。棚のタグも外して空きを作る。",
+    title: "③ A2・B2 が棚から取り出す",
+    desc:  "A2がA棚A-6から、B2がB棚B-4から、荷物を取り出す。棚のタグも外して空きを作る。",
     run: () => {
       ao('arr-to-shelfA', false); ao('arr-to-shelfB', false);
       flashShelf('a6', 'a-empty', '6');
@@ -630,7 +630,7 @@ const stepsOut = [
     }
   },
   {
-    title: "⑤ 完了 ✓　同時に返却終了",
+    title: "⑤ 完了 ✓　返却終了",
     desc:  "⭐も🌟も荷物を受け取って退場。A-6・B-4は再び空きに。「お疲れ様でした！」の声かけを忘れずに。空いた番号は次の預入から再利用できます。",
     run: () => {
       hl('stA_uketsuke', false); hl('stB_uketsuke', false);
@@ -695,8 +695,8 @@ function reset() {
     ? '▶ スタート：A1・A2・B1・B2 同時稼働！'
     : '▶ スタート：A1・B1 が同時に返却対応';
   g('step-desc').textContent = isIn
-    ? 'A1・A2（赤チーム）とB1・B2（青チーム）が左右の棚を独立して並行対応。⭐がA側、🌟がB側のボランティアです。「次のステップ」を押して同時進行を確認してください。'
-    : 'A1・B1が同時に別の返却を処理。⭐がA-6の半券、🌟がB-4の半券を持って来場しています。';
+    ? 'A1・A2（赤チーム）とB1・B2（青チーム）が左右の棚を独立して並行対応。⭐がA側、🌟がB側のボランティアです。「次のステップ」を押して進行を確認してください。'
+    : 'A1・B1が返却を処理。⭐がA-6の半券、🌟がB-4の半券を持って来場しています。';
   g('counter-disp').textContent = '0 / ' + getTotal();
   updateProg();
 }
