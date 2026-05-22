@@ -1,0 +1,717 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tokyo Pride 2026 – クローク受け渡しフロー</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700;900&family=Space+Mono:wght@400;700&display=swap');
+  :root {
+    --bg: #0d0d14; --surface: #16161f; --surface2: #1e1e2e;
+    --text: #f0f0f8; --dim: #888899; --accent: #FF3A5C;
+    --green: #4CAF50; --blue: #64B5F6; --gold: #FFD700; --orange: #FF8C00;
+    --red: #EF5350;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--bg); color: var(--text);
+    font-family: 'Noto Sans JP', sans-serif; min-height: 100vh;
+    max-width: 600px; margin: 0 auto;
+    border-left: 1px solid #ffffff08; border-right: 1px solid #ffffff08;
+  }
+  .rainbow-bar {
+    height: 4px; width: 100%; position: fixed; top: 0; left: 0; z-index: 100;
+    background: linear-gradient(90deg,#FF3A5C,#FF8C00,#FFD700,#4CAF50,#2196F3,#9C27B0);
+  }
+  header { margin-top: 4px; padding: 10px 18px 8px; border-bottom: 1px solid #ffffff10; }
+  header h1 { font-size: 11px; font-family: 'Space Mono',monospace; color: var(--dim); text-transform: uppercase; letter-spacing:.1em; }
+  header h1 span { display:block; font-size:14px; color:var(--text); font-family:'Noto Sans JP',sans-serif; margin-top:1px; }
+
+  .scene { padding: 10px 18px 20px; }
+
+  /* MODE TOGGLE */
+  .mode-toggle {
+    display: flex; gap: 0; margin-bottom: 10px;
+    border: 1px solid #ffffff15; border-radius: 9px; overflow: hidden;
+  }
+  .mode-btn {
+    flex: 1; padding: 8px 0; font-size: 12px; font-weight: 700;
+    font-family: 'Noto Sans JP', sans-serif; border: none; cursor: pointer;
+    background: none; color: var(--dim); transition: all .2s;
+  }
+  .mode-btn.active-in  { background: var(--red);  color: #fff; pointer-events: none; }
+  .mode-btn.active-out { background: var(--blue); color: #000; pointer-events: none; }
+  .mode-btn:not(.active-in):not(.active-out):hover { background: #ffffff0f; color: var(--text); }
+
+  /* LEGEND */
+  .legend {
+    display: flex; gap: 10px; flex-wrap: wrap;
+    margin-bottom: 8px; font-size: 10px; color: var(--dim);
+  }
+  .legend-item { display: flex; align-items: center; gap: 5px; }
+  .leg-dot {
+    width: 13px; height: 13px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 8px; font-weight: 700;
+  }
+
+  /* LAYOUT */
+  .layout {
+    position: relative; width: 100%; height: 310px;
+    background: var(--surface2); border-radius: 14px;
+    overflow: hidden; margin-bottom: 10px; border: 1px solid #ffffff08;
+  }
+
+  /* ──── SHELF ──── */
+  .shelf-unit {
+    position: absolute; top: 12px;
+    width: 108px; height: 200px;
+    border-radius: 6px;
+    display: flex; flex-direction: column; align-items: center;
+    padding: 6px 5px 5px;
+    font-size: 8px;
+  }
+  #shelf-A {
+    left: 12px;
+    background: rgba(239,83,80,.06); border: 1.5px solid rgba(239,83,80,.3);
+  }
+  #shelf-B {
+    right: 12px;
+    background: rgba(100,181,246,.06); border: 1.5px solid rgba(100,181,246,.3);
+  }
+  .shelf-title {
+    font-size: 9px; font-weight: 700; font-family: 'Space Mono', monospace;
+    margin-bottom: 5px; letter-spacing: .04em;
+  }
+  #shelf-A .shelf-title { color: var(--red); }
+  #shelf-B .shelf-title { color: var(--blue); }
+
+  .shelf-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 3px; width: 100%;
+  }
+  .sbox {
+    height: 28px; border-radius: 3px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 8px; font-weight: 700; font-family: 'Space Mono', monospace;
+    transition: all .45s ease; cursor: default;
+  }
+  /* A棚（赤系） */
+  .sbox.a-empty { background: #1a0b0b; border: 1px solid rgba(239,83,80,.2); color: rgba(239,83,80,.35); }
+  .sbox.a-used  { background: #3a1010; border: 1px solid rgba(239,83,80,.6); color: var(--red);
+                  box-shadow: 0 0 5px rgba(239,83,80,.25); }
+  .sbox.a-active{ background: #FFD70020; border: 2px solid var(--gold); color: var(--gold);
+                  box-shadow: 0 0 10px rgba(255,215,0,.5); }
+  /* B棚（青系） */
+  .sbox.b-empty { background: #060d18; border: 1px solid rgba(100,181,246,.2); color: rgba(100,181,246,.35); }
+  .sbox.b-used  { background: #0d2030; border: 1px solid rgba(100,181,246,.6); color: var(--blue);
+                  box-shadow: 0 0 5px rgba(100,181,246,.25); }
+  .sbox.b-active{ background: #FFD70020; border: 2px solid var(--gold); color: var(--gold);
+                  box-shadow: 0 0 10px rgba(255,215,0,.5); }
+
+  /* shelf rule note */
+  .shelf-rule {
+    margin-top: 5px; font-size: 7px; line-height: 1.5;
+    font-family: 'Space Mono', monospace; text-align: center;
+  }
+  #shelf-A .shelf-rule { color: rgba(239,83,80,.45); }
+  #shelf-B .shelf-rule { color: rgba(100,181,246,.45); }
+
+  /* ──── RACK (中央 ロッカー状のオブジェクト) ──── */
+  .rack-area {
+    position: absolute; top: 24px;
+    left: 50%; transform: translateX(-50%);
+    width: 100px; display: flex; gap: 6px; justify-content: center;
+  }
+  .rack {
+    width: 26px; height: 80px; border-radius: 4px;
+    background: #1e1e2e; border: 1px solid #ffffff15;
+    display: flex; flex-direction: column; gap: 3px; padding: 4px 3px;
+  }
+  .rack-shelf { flex: 1; background: #ffffff08; border-radius: 2px; }
+
+  /* ──── COUNTER ──── */
+  #counter {
+    position: absolute; bottom: 68px; left: 50%; transform: translateX(-50%);
+    width: 180px; height: 36px;
+    background: #0d1a0d; border: 1.5px solid rgba(76,175,80,.35); border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 10px; color: var(--green); font-weight: 700;
+  }
+
+  /* ──── STAFF ──── */
+  .staff {
+    position: absolute; width: 26px; height: 26px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 10px; font-weight: 700; border: 2px solid; z-index: 5;
+    transition: all .4s ease;
+  }
+  .staff.hl {
+    box-shadow: 0 0 16px rgba(255,215,0,.9);
+    transform: scale(1.25);
+    border-color: var(--gold) !important;
+    color: var(--gold) !important;
+    background: #1a1600 !important;
+  }
+  .stf-lbl {
+    position: absolute; font-size: 7.5px; font-family: 'Space Mono', monospace;
+    color: var(--dim); pointer-events: none; z-index: 6;
+    white-space: nowrap; text-align: center;
+  }
+  /* A:配置 (左奥・棚寄り) */
+  #stA_haichi  { top:118px; left:122px; background:#1a0808; border-color:rgba(239,83,80,.6); color:var(--red); }
+  #lbl_A_haichi{ top:147px; left:109px; }
+  /* A:受付 (カウンター左) */
+  #stA_uketsuke{ bottom:74px; left:168px; background:#1a0808; border-color:rgba(239,83,80,.5); color:var(--red); }
+  #lbl_A_uketsuke{ bottom:56px; left:155px; }
+  /* B:受付 (カウンター右) */
+  #stB_uketsuke{ bottom:74px; right:168px; background:#060d18; border-color:rgba(100,181,246,.5); color:var(--blue); }
+  #lbl_B_uketsuke{ bottom:56px; right:148px; }
+  /* B:配置 (右奥・棚寄り) */
+  #stB_haichi  { top:118px; right:122px; background:#060d18; border-color:rgba(100,181,246,.6); color:var(--blue); }
+  #lbl_B_haichi{ top:147px; right:108px; }
+
+  /* ──── VISITOR / BAG ──── */
+  .vol {
+    position: absolute; width: 24px; height: 24px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px; z-index: 8;
+    transition: all .7s cubic-bezier(.4,0,.2,1);
+  }
+
+  .bagbox {
+    position: absolute; z-index: 7;
+    font-size: 14px;
+    transition: all .7s cubic-bezier(.4,0,.2,1);
+    opacity: 0;
+  }
+  .tag-badge {
+    position: absolute; z-index: 9;
+    background: var(--gold); color: #000;
+    font-size: 8px; font-weight: 900; font-family: 'Space Mono', monospace;
+    padding: 1px 4px; border-radius: 3px;
+    transition: all .7s cubic-bezier(.4,0,.2,1);
+    opacity: 0;
+  }
+
+  /* ──── ARROW ──── */
+  .arr {
+    position: absolute; font-size: 14px; font-weight: 900;
+    pointer-events: none; z-index: 3;
+    transition: opacity .4s;
+    opacity: 0;
+  }
+
+  /* STEP INFO */
+  .step-info {
+    background: var(--surface); border-radius: 10px; padding: 9px 12px;
+    margin-bottom: 8px; border-left: 3px solid var(--red); min-height: 62px;
+    transition: border-color .3s;
+  }
+  .step-info h3 { font-size: 12px; margin-bottom: 3px; }
+  .step-info p  { font-size: 10.5px; color: var(--dim); line-height: 1.6; }
+
+  /* PROGRESS */
+  .progress { display: flex; gap: 4px; margin-bottom: 8px; }
+  .dot { height: 4px; flex: 1; border-radius: 2px; background: #ffffff10; transition: background .3s; }
+  .dot.done    { background: var(--red); }
+  .dot.current { background: var(--gold); }
+  .dot.done-out { background: var(--blue); }
+
+  /* CONTROLS */
+  .controls { display: flex; gap: 9px; align-items: center; margin-bottom: 14px; }
+  .btn { padding: 8px 16px; border-radius: 8px; border: none; cursor: pointer; font-size: 12px; font-family: 'Noto Sans JP',sans-serif; font-weight: 700; transition: all .2s; }
+  .btn-p { background: var(--red); color: white; }
+  .btn-p.mode-out { background: var(--blue); color: #000; }
+  .btn-s { background: #ffffff0f; color: var(--text); border: 1px solid #ffffff18; }
+  .btn:disabled { opacity: .4; cursor: default; }
+  .btn:not(:disabled):hover { opacity: .85; transform: translateY(-1px); }
+  .ctr { font-size: 11px; font-family: 'Space Mono',monospace; color: var(--dim); margin-left: auto; }
+
+  /* TAG RULE BOX */
+  .tag-rule {
+    background: rgba(255,215,0,.05); border: 1px solid rgba(255,215,0,.25);
+    border-left: 3px solid var(--gold); border-radius: 10px;
+    padding: 10px 14px; margin-bottom: 14px;
+  }
+  .tag-rule h4 { font-size: 11px; color: var(--gold); margin-bottom: 7px; display: flex; align-items: center; gap: 5px; }
+  .tag-rule ul { list-style: none; }
+  .tag-rule li {
+    font-size: 10.5px; color: var(--text); line-height: 1.7;
+    padding-left: 14px; position: relative;
+  }
+  .tag-rule li::before { content: '🏷'; position: absolute; left: 0; font-size: 9px; }
+
+  /* NOTES */
+  .notes {
+    background: rgba(255,58,92,.05);
+    border: 1px solid rgba(255,58,92,.2);
+    border-left: 3px solid var(--accent);
+    border-radius: 10px; padding: 12px 14px; margin-bottom: 14px;
+  }
+  .notes h4 { font-size: 12px; color: var(--accent); margin-bottom: 8px; display: flex; align-items: center; gap: 6px; }
+  .notes ul { list-style: none; }
+  .notes li {
+    font-size: 11px; color: var(--text); line-height: 1.7;
+    padding-left: 14px; position: relative;
+  }
+  .notes li::before { content: '・'; color: var(--accent); position: absolute; left: 0; }
+  .notes .hot { color: var(--accent); font-weight: 700; }
+  .notes .staff-table {
+    margin-top: 10px; width: 100%; border-collapse: collapse; font-size: 10px;
+  }
+  .notes .staff-table td {
+    padding: 4px 8px; border-bottom: 1px solid rgba(255,58,92,.1); color: var(--text);
+  }
+  .notes .staff-table td:first-child { color: var(--dim); white-space: nowrap; width: 40%; }
+  .notes .staff-table td:last-child { color: var(--gold); font-family: 'Space Mono', monospace; font-weight: 700; text-align: right; }
+  .notes .staff-table .role-a { color: var(--red); }
+  .notes .staff-table .role-b { color: var(--blue); }
+
+  /* NAV */
+  .nav-links { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 16px; }
+  .nav-link {
+    display: inline-flex; align-items: center; gap: 5px;
+    padding: 7px 12px; border-radius: 8px; text-decoration: none;
+    background: #ffffff09; border: 1px solid #ffffff12;
+    color: var(--text); font-size: 11px; font-weight: 700; transition: all .2s;
+  }
+  .nav-link:hover { background: #ffffff16; transform: translateY(-1px); }
+</style>
+</head>
+<body>
+<div class="rainbow-bar"></div>
+
+<header>
+  <h1>Tokyo Pride 2026 / Operations<span>🧳 クローク 受け渡しフロー（ボランティア向け）</span></h1>
+</header>
+
+<div class="scene">
+
+  <!-- MODE TOGGLE -->
+  <div class="mode-toggle">
+    <button class="mode-btn active-in" id="btn-mode-in"  onclick="setMode('in')">📦 預入フロー</button>
+    <button class="mode-btn"           id="btn-mode-out" onclick="setMode('out')">🎒 返却フロー</button>
+  </div>
+
+  <div class="progress" id="progress"></div>
+
+  <!-- 凡例 -->
+  <div class="legend">
+    <div class="legend-item">
+      <div class="leg-dot" style="background:#1a0808;border:2px solid rgba(239,83,80,.6);color:var(--red);">A1</div>
+      <span>A1・A2（赤）</span>
+    </div>
+    <div class="legend-item">
+      <div class="leg-dot" style="background:#060d18;border:2px solid rgba(100,181,246,.6);color:var(--blue);">B1</div>
+      <span>B1・B2（青）</span>
+    </div>
+    <div class="legend-item">⭐🌟 ボランティア</div>
+  </div>
+
+  <!-- LAYOUT -->
+  <div class="layout">
+
+    <!-- A棚（左・赤） -->
+    <div class="shelf-unit" id="shelf-A">
+      <div class="shelf-title">A 棚（赤）</div>
+      <div class="shelf-grid" id="grid-A">
+        <!-- JS で生成 -->
+      </div>
+      <div class="shelf-rule">↓ 小→大 上から詰める<br>列が埋まったら→隣列へ</div>
+    </div>
+
+    <!-- B棚（右・青） -->
+    <div class="shelf-unit" id="shelf-B">
+      <div class="shelf-title">B 棚（青）</div>
+      <div class="shelf-grid" id="grid-B">
+        <!-- JS で生成 -->
+      </div>
+      <div class="shelf-rule">↓ 小→大 上から詰める<br>列が埋まったら→隣列へ</div>
+    </div>
+
+    <!-- 中央ラック（ロッカー風） -->
+    <div class="rack-area">
+      <div class="rack">
+        <div class="rack-shelf"></div><div class="rack-shelf"></div>
+        <div class="rack-shelf"></div><div class="rack-shelf"></div>
+      </div>
+      <div class="rack">
+        <div class="rack-shelf"></div><div class="rack-shelf"></div>
+        <div class="rack-shelf"></div><div class="rack-shelf"></div>
+      </div>
+      <div class="rack">
+        <div class="rack-shelf"></div><div class="rack-shelf"></div>
+        <div class="rack-shelf"></div><div class="rack-shelf"></div>
+      </div>
+    </div>
+
+    <!-- 受付カウンター -->
+    <div id="counter">🗂 クローク受付カウンター</div>
+
+    <!-- スタッフ -->
+    <div class="staff" id="stA_haichi">A2</div>
+    <div class="stf-lbl" id="lbl_A_haichi">A2</div>
+
+    <div class="staff" id="stA_uketsuke">A1</div>
+    <div class="stf-lbl" id="lbl_A_uketsuke">A1</div>
+
+    <div class="staff" id="stB_uketsuke">B1</div>
+    <div class="stf-lbl" id="lbl_B_uketsuke">B1</div>
+
+    <div class="staff" id="stB_haichi">B2</div>
+    <div class="stf-lbl" id="lbl_B_haichi">B2</div>
+
+    <!-- ボランティア A側（左） -->
+    <div class="vol"  id="vol"  style="left:calc(50% - 36px); bottom:20px;">⭐</div>
+    <!-- ボランティア B側（右） -->
+    <div class="vol"  id="vol2" style="left:calc(50% + 14px); bottom:20px; opacity:1;">🌟</div>
+
+    <!-- 荷物 A側 -->
+    <div class="bagbox" id="bag">🎒</div>
+    <!-- 荷物 B側 -->
+    <div class="bagbox" id="bag2" style="opacity:0;">🎒</div>
+
+    <!-- タグバッジ A側 (荷物用・半券) -->
+    <div class="tag-badge" id="tag-a1" style="opacity:0;">A-6</div>
+    <div class="tag-badge" id="tag-a2" style="opacity:0; background:rgba(239,83,80,.9); color:#fff;">A-6</div>
+    <!-- タグバッジ B側 (荷物用・半券) -->
+    <div class="tag-badge" id="tag-b1" style="opacity:0; background:rgba(100,181,246,.9); color:#000;">B-4</div>
+    <div class="tag-badge" id="tag-b2" style="opacity:0; background:rgba(100,181,246,.9); color:#000;">B-4</div>
+
+    <!-- 矢印 A側 -->
+    <div class="arr" id="arr-A-cnt" style="left:160px; bottom:62px; color:var(--red);">↑</div>
+    <!-- 矢印 B側 -->
+    <div class="arr" id="arr-B-cnt" style="right:160px; bottom:62px; color:var(--blue);">↑</div>
+    <!-- 棚への矢印 -->
+    <div class="arr" id="arr-to-shelfA" style="left:148px; top:112px; color:var(--red);">↑</div>
+    <div class="arr" id="arr-to-shelfB" style="right:148px; top:112px; color:var(--blue);">↑</div>
+
+  </div><!-- /layout -->
+
+  <!-- STEP INFO -->
+  <div class="step-info" id="step-info">
+    <h3 id="step-title">▶ スタート：クロークへ来場</h3>
+    <p id="step-desc">ボランティアが朝、荷物を持ってクロークに来たところから始まります。<br>
+    Aチーム（赤）が左棚、Bチーム（青）が右棚を担当します。</p>
+  </div>
+
+  <div class="controls">
+    <button class="btn btn-s" onclick="reset()">↩ リセット</button>
+    <button class="btn btn-p" id="next-btn" onclick="nextStep()">次のステップ ▶</button>
+    <span class="ctr" id="counter-disp">0 / 5</span>
+  </div>
+
+  <!-- タグ管理ルール -->
+  <div class="tag-rule">
+    <h4>🏷 タグ管理ルール（棚の埋め方）</h4>
+    <img src="タグ写真.jpg" alt="クロークタグ（ミシン目で上下に切り離し可能）"
+         style="width:100%; border-radius:10px; margin-bottom:10px; display:block;">
+    <ul>
+      <li>タグはミシン目で上下に切り離して使う。<strong>上部（紐付き）を荷物に取り付け、下部（半券）を本人へ渡す。</strong></li>
+      <li>タグ番号は小さい順から。同じ棚ユニットは同じ色のタグを使用。</li>
+      <li>1列目の上から順番に詰めていく（①→②→③→…）。列が埋まったら次の列の一番上へ。</li>
+      <li>返却時は半券の番号と棚のタグを照合してから渡す。番号が合えばOK。</li>
+    </ul>
+  </div>
+
+  <!-- 注意事項 -->
+  <div class="notes">
+    <h4>⚠ 朝ピーク時の注意事項</h4>
+    <ul>
+      <li><span class="hot">7:30〜9:30</span> は入場受付と重なる最大の混雑帯。焦らずテンポよく。</li>
+      <li>受付（A/B）は次のタグ番号を声に出して確認。「Aの8番です」と明確に。</li>
+      <li>配置（A/B）は棚の状況をリアルタイムで把握。どこまで埋まったか共有を。</li>
+      <li>荷物が大きい場合は特大エリアへ誘導。タグ番号は同じルールで続ける。</li>
+      <li>列が埋まったら「次の列に移ります」と声を出してスタッフ間で共有。</li>
+    </ul>
+    <table class="staff-table">
+      <tr><td>クローク朝ピーク</td><td><span class="role-a">A1（受付）/ A2（棚）</span> ＋ <span class="role-b">B1（受付）/ B2（棚）</span></td></tr>
+      <tr><td>飲料ゾーン</td><td>2名</td></tr>
+      <tr><td>名札＋Tシャツ案内</td><td>1名（余裕があれば ＋1名）</td></tr>
+      <tr><td>チェックイン（運営）</td><td>運営 2名（自分）＋ 周辺回遊 1名</td></tr>
+    </table>
+  </div>
+
+  <div class="nav-links">
+    <a class="nav-link" href="index.html">← トップに戻る</a>
+    <a class="nav-link" href="timeline.html">📅 スケジュール</a>
+    <a class="nav-link" href="morning_flow.html">🌅 朝の受付フロー</a>
+    <a class="nav-link" href="pride_flow.html">🍱 弁当・水分 動線</a>
+  </div>
+
+</div><!-- /scene -->
+
+<script>
+// ─── SHELF INIT ──────────────────────────────────────
+const shelfAData = [
+  { id:'a1', label:'A-1', state:'used'  },
+  { id:'a2', label:'A-2', state:'used'  },
+  { id:'a3', label:'A-3', state:'used'  },
+  { id:'a4', label:'A-4', state:'used'  },
+  { id:'a5', label:'A-5', state:'used'  },
+  { id:'a6', label:'A-6', state:'empty' },
+  { id:'a7', label:'A-7', state:'empty' },
+  { id:'a8', label:'A-8', state:'empty' },
+  { id:'a9', label:'A-9', state:'empty' },
+];
+const shelfBData = [
+  { id:'b1', label:'B-1', state:'used'  },
+  { id:'b2', label:'B-2', state:'used'  },
+  { id:'b3', label:'B-3', state:'used'  },
+  { id:'b4', label:'B-4', state:'empty' },
+  { id:'b5', label:'B-5', state:'empty' },
+  { id:'b6', label:'B-6', state:'empty' },
+  { id:'b7', label:'B-7', state:'empty' },
+  { id:'b8', label:'B-8', state:'empty' },
+  { id:'b9', label:'B-9', state:'empty' },
+];
+
+function buildShelf(gridId, data, prefix) {
+  const grid = document.getElementById(gridId);
+  grid.innerHTML = '';
+  data.forEach(s => {
+    const el = document.createElement('div');
+    el.id = s.id;
+    el.className = `sbox ${prefix}-${s.state}`;
+    el.textContent = s.state === 'empty' ? s.label.split('-')[1] : s.label;
+    grid.appendChild(el);
+  });
+}
+function buildShelves() {
+  buildShelf('grid-A', shelfAData, 'a');
+  buildShelf('grid-B', shelfBData, 'b');
+}
+buildShelves();
+
+// ─── UTIL ────────────────────────────────────────────
+const g  = id => document.getElementById(id);
+const ao = (id, val) => { const e = g(id); if (e) e.style.opacity = (val === true ? '1' : val === false ? '0' : String(val)); };
+const hl = (id, on)  => { const e = g(id); if (!e) return; on ? e.classList.add('hl') : e.classList.remove('hl'); };
+
+function mv(id, opts = {}) {
+  const e = g(id); if (!e) return;
+  if (opts.left   !== undefined) { e.style.right  = 'auto'; e.style.left   = opts.left;   }
+  if (opts.right  !== undefined) { e.style.left   = 'auto'; e.style.right  = opts.right;  }
+  if (opts.bottom !== undefined) { e.style.top    = 'auto'; e.style.bottom = opts.bottom; }
+  if (opts.top    !== undefined) { e.style.bottom = 'auto'; e.style.top    = opts.top;    }
+  if (opts.opacity !== undefined) e.style.opacity = String(opts.opacity);
+}
+
+function flashShelf(id, finalClass, finalText) {
+  const e = g(id); if (!e) return;
+  const isA = id.startsWith('a');
+  e.className = `sbox ${isA ? 'a' : 'b'}-active`;
+  e.textContent = finalText;
+  setTimeout(() => { e.className = `sbox ${finalClass}`; e.textContent = finalText; }, 800);
+}
+
+// ─── MODE ────────────────────────────────────────────
+let currentMode = 'in';
+let step = 0;
+
+// ─── STEPS: 預入（A/B 同時進行） ───────────────────────
+const TOTAL_IN = 5;
+const stepsIn = [
+  {
+    title: "① A1・B1 が同時に声かけ、カウンターへ",
+    desc:  "⭐Aチーム側と🌟Bチーム側に別々のボランティアが荷物を持って同時に来場。A1・B1（カウンター担当）が「お預かりします！」と同時に声をかけて対応開始。",
+    run: () => {
+      mv('vol',  { left:'152px',  bottom:'72px' });
+      mv('vol2', { right:'152px', bottom:'72px', opacity:1 });
+      mv('bag',  { left:'136px',  bottom:'72px', opacity:1 });
+      mv('bag2', { right:'136px', bottom:'72px', opacity:1 });
+      hl('stA_uketsuke', true);
+      hl('stB_uketsuke', true);
+      ao('arr-A-cnt', true);
+      ao('arr-B-cnt', true);
+    }
+  },
+  {
+    title: "② A1・B1 が同時にタグを発行",
+    desc:  "A1が「A-6番です！」、B1が「B-4番です！」と同時にタグを荷物に取り付け、半券を本人へ渡す。声出し確認で番号ミスを防ぐ。",
+    run: () => {
+      ao('arr-A-cnt', false); ao('arr-B-cnt', false);
+      hl('stA_uketsuke', false); hl('stB_uketsuke', false);
+      mv('tag-a1', { left:'128px',  bottom:'88px', opacity:1 });
+      mv('tag-a2', { left:'152px',  bottom:'70px', opacity:1 });
+      mv('tag-b1', { right:'128px', bottom:'88px', opacity:1 });
+      mv('tag-b2', { right:'152px', bottom:'70px', opacity:1 });
+    }
+  },
+  {
+    title: "③ A2・B2 が同時に棚へ運ぶ",
+    desc:  "A2が左のA棚へ、B2が右のB棚へ、それぞれ同時に荷物を運ぶ。A1・B1はすぐ次のお客さんの対応へ。これが4人体制のメリット！",
+    run: () => {
+      hl('stA_haichi', true);
+      hl('stB_haichi', true);
+      mv('bag',    { left:'116px',  top:'130px', opacity:1 });
+      mv('tag-a1', { left:'118px',  top:'118px', opacity:1 });
+      ao('arr-to-shelfA', true);
+      mv('bag2',   { right:'116px', top:'130px', opacity:1 });
+      mv('tag-b1', { right:'118px', top:'118px', opacity:1 });
+      ao('arr-to-shelfB', true);
+      mv('vol',  { left:'140px',  bottom:'90px' });
+      mv('vol2', { right:'140px', bottom:'90px' });
+    }
+  },
+  {
+    title: "④ A-6・B-4 に同時に収納完了！",
+    desc:  "A2がA棚のA-6番、B2がB棚のB-4番に同時に収納。棚の状態が更新される。ボランティアは半券を持って持ち場へ向かう。",
+    run: () => {
+      ao('arr-to-shelfA', false); ao('arr-to-shelfB', false);
+      hl('stA_haichi', false); hl('stB_haichi', false);
+      flashShelf('a6', 'a-used', 'A-6');
+      flashShelf('b4', 'b-used', 'B-4');
+      mv('bag',    { left:'116px',  top:'130px', opacity:0 });
+      mv('bag2',   { right:'116px', top:'130px', opacity:0 });
+      mv('tag-a1', { opacity:0 }); mv('tag-b1', { opacity:0 });
+      mv('vol',  { left:'100px',  bottom:'40px' });
+      mv('vol2', { right:'100px', bottom:'40px' });
+    }
+  },
+  {
+    title: "⑤ 完了 ✓　A1・A2・B1・B2で次のお客さんへ",
+    desc:  "⭐はA-6・🌟はB-4の半券を持って持ち場へ。4人全員がすぐに次のボランティアへ。朝7:30〜9:30の混雑帯はこのサイクルを高速で回します！",
+    run: () => {
+      mv('tag-a2', { opacity:0 }); mv('tag-b2', { opacity:0 });
+      mv('vol',  { left:'calc(50% - 36px)', bottom:'20px' });
+      mv('vol2', { left:'calc(50% + 14px)', bottom:'20px' });
+    }
+  }
+];
+
+// ─── STEPS: 返却（A/B 同時進行） ───────────────────────
+const TOTAL_OUT = 5;
+const stepsOut = [
+  {
+    title: "① A1・B1 が同時に返却対応",
+    desc:  "⭐がA-6の半券を持ってA1へ、🌟がB-4の半券を持ってB1へ、同時に来場。それぞれ別のスタッフが対応するので待ち時間ゼロ！",
+    run: () => {
+      mv('vol',  { left:'152px',  bottom:'72px' });
+      mv('vol2', { right:'152px', bottom:'72px', opacity:1 });
+      mv('tag-a2', { left:'152px',  bottom:'88px', opacity:1 });
+      mv('tag-b2', { right:'152px', bottom:'88px', opacity:1 });
+      hl('stA_uketsuke', true);
+      hl('stB_uketsuke', true);
+      ao('arr-A-cnt', true); ao('arr-B-cnt', true);
+    }
+  },
+  {
+    title: "② A1・B1 が同時に番号確認・A2・B2 に指示",
+    desc:  "「A-6番ですね！」「B-4番ですね！」と同時に声出し確認。A1→A2、B1→B2へ「〇〇番の荷物お願いします！」と同時に指示を出す。",
+    run: () => {
+      ao('arr-A-cnt', false); ao('arr-B-cnt', false);
+      hl('stA_uketsuke', false); hl('stB_uketsuke', false);
+      hl('stA_haichi', true);  hl('stB_haichi', true);
+      ao('arr-to-shelfA', true); ao('arr-to-shelfB', true);
+    }
+  },
+  {
+    title: "③ A2・B2 が同時に棚から取り出す",
+    desc:  "A2がA棚A-6から、B2がB棚B-4から、同時に荷物を取り出す。棚のタグも外して空きを作る。",
+    run: () => {
+      ao('arr-to-shelfA', false); ao('arr-to-shelfB', false);
+      flashShelf('a6', 'a-empty', '6');
+      flashShelf('b4', 'b-empty', '4');
+      mv('bag',  { left:'116px',  top:'130px', opacity:1 });
+      mv('bag2', { right:'116px', top:'130px', opacity:1 });
+    }
+  },
+  {
+    title: "④ A1・B1 が半券照合して同時に渡す",
+    desc:  "A2・B2がカウンターに荷物を運び、A1・B1がそれぞれ半券番号と照合。「確認できました！」→ 本人へ同時に渡す。",
+    run: () => {
+      hl('stA_haichi', false); hl('stB_haichi', false);
+      hl('stA_uketsuke', true); hl('stB_uketsuke', true);
+      mv('bag',  { left:'148px',  bottom:'72px', opacity:1 });
+      mv('bag2', { right:'148px', bottom:'72px', opacity:1 });
+      mv('tag-a2', { opacity:0 }); mv('tag-b2', { opacity:0 });
+    }
+  },
+  {
+    title: "⑤ 完了 ✓　同時に返却終了",
+    desc:  "⭐も🌟も荷物を受け取って退場。A-6・B-4は再び空きに。「お疲れ様でした！」の声かけを忘れずに。空いた番号は次の預入から再利用できます。",
+    run: () => {
+      hl('stA_uketsuke', false); hl('stB_uketsuke', false);
+      mv('vol',  { left:'calc(50% - 36px)', bottom:'20px' });
+      mv('vol2', { left:'calc(50% + 14px)', bottom:'20px' });
+      mv('bag',  { opacity:0 }); mv('bag2', { opacity:0 });
+    }
+  }
+];
+
+// ─── ENGINE ──────────────────────────────────────────
+function getSteps()     { return currentMode === 'in' ? stepsIn  : stepsOut; }
+function getTotal()     { return currentMode === 'in' ? TOTAL_IN : TOTAL_OUT; }
+function getDoneClass() { return currentMode === 'in' ? 'done'   : 'done-out'; }
+
+function nextStep() {
+  const steps = getSteps();
+  if (step >= getTotal()) return;
+  steps[step].run();
+  g('step-title').textContent = steps[step].title;
+  g('step-desc').textContent  = steps[step].desc;
+  step++;
+  g('counter-disp').textContent = step + ' / ' + getTotal();
+  updateProg();
+  if (step >= getTotal()) {
+    g('next-btn').textContent = '完了 ✓';
+    g('next-btn').disabled    = true;
+  }
+}
+
+function updateProg() {
+  const p = g('progress'); p.innerHTML = '';
+  const T = getTotal(); const dc = getDoneClass();
+  for (let i = 0; i < T; i++) {
+    const d = document.createElement('div');
+    d.className = 'dot' + (i < step ? ' '+dc : i === step ? ' current' : '');
+    p.appendChild(d);
+  }
+}
+
+function hardReset() {
+  step = 0;
+  buildShelves();
+  // ボランティア初期位置（両方表示）
+  mv('vol',  { left:'calc(50% - 36px)', bottom:'20px', opacity:1 });
+  mv('vol2', { left:'calc(50% + 14px)', bottom:'20px', opacity:1 });
+  // 荷物・タグを隠す
+  ['bag','bag2','tag-a1','tag-a2','tag-b1','tag-b2'].forEach(id => ao(id, false));
+  // 矢印を隠す
+  ['arr-A-cnt','arr-B-cnt','arr-to-shelfA','arr-to-shelfB'].forEach(id => ao(id, false));
+  // スタッフハイライト解除
+  ['stA_haichi','stA_uketsuke','stB_uketsuke','stB_haichi'].forEach(id => hl(id, false));
+  // ボタン
+  g('next-btn').textContent = '次のステップ ▶';
+  g('next-btn').disabled    = false;
+}
+
+function reset() {
+  hardReset();
+  const isIn = currentMode === 'in';
+  g('step-title').textContent = isIn
+    ? '▶ スタート：A1・A2・B1・B2 同時稼働！'
+    : '▶ スタート：A1・B1 が同時に返却対応';
+  g('step-desc').textContent = isIn
+    ? 'A1・A2（赤チーム）とB1・B2（青チーム）が左右の棚を独立して並行対応。⭐がA側、🌟がB側のボランティアです。「次のステップ」を押して同時進行を確認してください。'
+    : 'A1・B1が同時に別の返却を処理。⭐がA-6の半券、🌟がB-4の半券を持って来場しています。';
+  g('counter-disp').textContent = '0 / ' + getTotal();
+  updateProg();
+}
+
+function setMode(mode) {
+  currentMode = mode;
+  g('btn-mode-in').className  = 'mode-btn' + (mode === 'in'  ? ' active-in'  : '');
+  g('btn-mode-out').className = 'mode-btn' + (mode === 'out' ? ' active-out' : '');
+  g('step-info').style.borderLeftColor = mode === 'in' ? 'var(--red)' : 'var(--blue)';
+  const nb = g('next-btn');
+  mode === 'out' ? nb.classList.add('mode-out') : nb.classList.remove('mode-out');
+  reset();
+}
+
+// init
+reset();
+</script>
+</body>
+</html>
