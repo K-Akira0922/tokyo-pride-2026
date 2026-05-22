@@ -132,10 +132,11 @@
   /* ──── COUNTER ──── */
   #counter {
     position: absolute; bottom: 68px; left: 50%; transform: translateX(-50%);
-    width: 180px; height: 36px;
+    width: 172px; height: 36px;
     background: #0d1a0d; border: 1.5px solid rgba(76,175,80,.35); border-radius: 8px;
     display: flex; align-items: center; justify-content: center;
-    font-size: 10px; color: var(--green); font-weight: 700;
+    font-size: 9px; color: var(--green); font-weight: 700;
+    white-space: nowrap; text-align: center; padding: 0 6px;
   }
 
   /* ──── STAFF ──── */
@@ -157,18 +158,18 @@
     color: var(--dim); pointer-events: none; z-index: 6;
     white-space: nowrap; text-align: center;
   }
-  /* A:配置 (左奥・棚寄り) */
-  #stA_haichi  { top:118px; left:122px; background:#1a0808; border-color:rgba(239,83,80,.6); color:var(--red); }
-  #lbl_A_haichi{ top:147px; left:109px; }
-  /* A:受付 (カウンター左) */
-  #stA_uketsuke{ bottom:74px; left:168px; background:#1a0808; border-color:rgba(239,83,80,.5); color:var(--red); }
-  #lbl_A_uketsuke{ bottom:56px; left:155px; }
-  /* B:受付 (カウンター右) */
-  #stB_uketsuke{ bottom:74px; right:168px; background:#060d18; border-color:rgba(100,181,246,.5); color:var(--blue); }
-  #lbl_B_uketsuke{ bottom:56px; right:148px; }
-  /* B:配置 (右奥・棚寄り) */
-  #stB_haichi  { top:118px; right:122px; background:#060d18; border-color:rgba(100,181,246,.6); color:var(--blue); }
-  #lbl_B_haichi{ top:147px; right:108px; }
+  /* A2: 棚担当（左寄り） */
+  #stA_haichi   { top:118px; left:20%; background:#1a0808; border-color:rgba(239,83,80,.6); color:var(--red); }
+  #lbl_A_haichi { top:147px; left:calc(20% - 4px); }
+  /* A1: 受付担当（カウンター左） */
+  #stA_uketsuke   { bottom:74px; left:34%; background:#1a0808; border-color:rgba(239,83,80,.5); color:var(--red); }
+  #lbl_A_uketsuke { bottom:56px; left:calc(34% - 4px); }
+  /* B1: 受付担当（カウンター右） */
+  #stB_uketsuke   { bottom:74px; right:34%; background:#060d18; border-color:rgba(100,181,246,.5); color:var(--blue); }
+  #lbl_B_uketsuke { bottom:56px; right:calc(34% - 4px); }
+  /* B2: 棚担当（右寄り） */
+  #stB_haichi   { top:118px; right:20%; background:#060d18; border-color:rgba(100,181,246,.6); color:var(--blue); }
+  #lbl_B_haichi { top:147px; right:calc(20% - 4px); }
 
   /* ──── VISITOR / BAG ──── */
   .vol {
@@ -379,12 +380,12 @@
     <div class="tag-badge" id="tag-b2" style="opacity:0; background:rgba(100,181,246,.9); color:#000;">B-4</div>
 
     <!-- 矢印 A側 -->
-    <div class="arr" id="arr-A-cnt" style="left:160px; bottom:62px; color:var(--red);">↑</div>
+    <div class="arr" id="arr-A-cnt" style="left:30%; bottom:62px; color:var(--red);">↑</div>
     <!-- 矢印 B側 -->
-    <div class="arr" id="arr-B-cnt" style="right:160px; bottom:62px; color:var(--blue);">↑</div>
+    <div class="arr" id="arr-B-cnt" style="right:30%; bottom:62px; color:var(--blue);">↑</div>
     <!-- 棚への矢印 -->
-    <div class="arr" id="arr-to-shelfA" style="left:148px; top:112px; color:var(--red);">↑</div>
-    <div class="arr" id="arr-to-shelfB" style="right:148px; top:112px; color:var(--blue);">↑</div>
+    <div class="arr" id="arr-to-shelfA" style="left:20%; top:112px; color:var(--red);">↑</div>
+    <div class="arr" id="arr-to-shelfB" style="right:20%; top:112px; color:var(--blue);">↑</div>
 
   </div><!-- /layout -->
 
@@ -516,10 +517,10 @@ const stepsIn = [
     title: "① A1・B1 が同時に声かけ、カウンターへ",
     desc:  "⭐Aチーム側と🌟Bチーム側に別々のボランティアが荷物を持って同時に来場。A1・B1（カウンター担当）が「お預かりします！」と同時に声をかけて対応開始。",
     run: () => {
-      mv('vol',  { left:'152px',  bottom:'72px' });
-      mv('vol2', { right:'152px', bottom:'72px', opacity:1 });
-      mv('bag',  { left:'136px',  bottom:'72px', opacity:1 });
-      mv('bag2', { right:'136px', bottom:'72px', opacity:1 });
+      mv('vol',  { left:'32%',  bottom:'72px' });
+      mv('vol2', { right:'32%', bottom:'72px', opacity:1 });
+      mv('bag',  { left:'28%',  bottom:'72px', opacity:1 });
+      mv('bag2', { right:'28%', bottom:'72px', opacity:1 });
       hl('stA_uketsuke', true);
       hl('stB_uketsuke', true);
       ao('arr-A-cnt', true);
@@ -532,10 +533,10 @@ const stepsIn = [
     run: () => {
       ao('arr-A-cnt', false); ao('arr-B-cnt', false);
       hl('stA_uketsuke', false); hl('stB_uketsuke', false);
-      mv('tag-a1', { left:'128px',  bottom:'88px', opacity:1 });
-      mv('tag-a2', { left:'152px',  bottom:'70px', opacity:1 });
-      mv('tag-b1', { right:'128px', bottom:'88px', opacity:1 });
-      mv('tag-b2', { right:'152px', bottom:'70px', opacity:1 });
+      mv('tag-a1', { left:'26%',  bottom:'88px', opacity:1 });
+      mv('tag-a2', { left:'32%',  bottom:'70px', opacity:1 });
+      mv('tag-b1', { right:'26%', bottom:'88px', opacity:1 });
+      mv('tag-b2', { right:'32%', bottom:'70px', opacity:1 });
     }
   },
   {
@@ -544,14 +545,14 @@ const stepsIn = [
     run: () => {
       hl('stA_haichi', true);
       hl('stB_haichi', true);
-      mv('bag',    { left:'116px',  top:'130px', opacity:1 });
-      mv('tag-a1', { left:'118px',  top:'118px', opacity:1 });
+      mv('bag',    { left:'18%',  top:'130px', opacity:1 });
+      mv('tag-a1', { left:'19%',  top:'118px', opacity:1 });
       ao('arr-to-shelfA', true);
-      mv('bag2',   { right:'116px', top:'130px', opacity:1 });
-      mv('tag-b1', { right:'118px', top:'118px', opacity:1 });
+      mv('bag2',   { right:'18%', top:'130px', opacity:1 });
+      mv('tag-b1', { right:'19%', top:'118px', opacity:1 });
       ao('arr-to-shelfB', true);
-      mv('vol',  { left:'140px',  bottom:'90px' });
-      mv('vol2', { right:'140px', bottom:'90px' });
+      mv('vol',  { left:'30%',  bottom:'90px' });
+      mv('vol2', { right:'30%', bottom:'90px' });
     }
   },
   {
@@ -562,11 +563,11 @@ const stepsIn = [
       hl('stA_haichi', false); hl('stB_haichi', false);
       flashShelf('a6', 'a-used', 'A-6');
       flashShelf('b4', 'b-used', 'B-4');
-      mv('bag',    { left:'116px',  top:'130px', opacity:0 });
-      mv('bag2',   { right:'116px', top:'130px', opacity:0 });
+      mv('bag',    { left:'18%',  top:'130px', opacity:0 });
+      mv('bag2',   { right:'18%', top:'130px', opacity:0 });
       mv('tag-a1', { opacity:0 }); mv('tag-b1', { opacity:0 });
-      mv('vol',  { left:'100px',  bottom:'40px' });
-      mv('vol2', { right:'100px', bottom:'40px' });
+      mv('vol',  { left:'24%',  bottom:'40px' });
+      mv('vol2', { right:'24%', bottom:'40px' });
     }
   },
   {
@@ -587,10 +588,10 @@ const stepsOut = [
     title: "① A1・B1 が同時に返却対応",
     desc:  "⭐がA-6の半券を持ってA1へ、🌟がB-4の半券を持ってB1へ、同時に来場。それぞれ別のスタッフが対応するので待ち時間ゼロ！",
     run: () => {
-      mv('vol',  { left:'152px',  bottom:'72px' });
-      mv('vol2', { right:'152px', bottom:'72px', opacity:1 });
-      mv('tag-a2', { left:'152px',  bottom:'88px', opacity:1 });
-      mv('tag-b2', { right:'152px', bottom:'88px', opacity:1 });
+      mv('vol',  { left:'32%',  bottom:'72px' });
+      mv('vol2', { right:'32%', bottom:'72px', opacity:1 });
+      mv('tag-a2', { left:'32%',  bottom:'88px', opacity:1 });
+      mv('tag-b2', { right:'32%', bottom:'88px', opacity:1 });
       hl('stA_uketsuke', true);
       hl('stB_uketsuke', true);
       ao('arr-A-cnt', true); ao('arr-B-cnt', true);
@@ -613,8 +614,8 @@ const stepsOut = [
       ao('arr-to-shelfA', false); ao('arr-to-shelfB', false);
       flashShelf('a6', 'a-empty', '6');
       flashShelf('b4', 'b-empty', '4');
-      mv('bag',  { left:'116px',  top:'130px', opacity:1 });
-      mv('bag2', { right:'116px', top:'130px', opacity:1 });
+      mv('bag',  { left:'18%',  top:'130px', opacity:1 });
+      mv('bag2', { right:'18%', top:'130px', opacity:1 });
     }
   },
   {
@@ -623,8 +624,8 @@ const stepsOut = [
     run: () => {
       hl('stA_haichi', false); hl('stB_haichi', false);
       hl('stA_uketsuke', true); hl('stB_uketsuke', true);
-      mv('bag',  { left:'148px',  bottom:'72px', opacity:1 });
-      mv('bag2', { right:'148px', bottom:'72px', opacity:1 });
+      mv('bag',  { left:'32%',  bottom:'72px', opacity:1 });
+      mv('bag2', { right:'32%', bottom:'72px', opacity:1 });
       mv('tag-a2', { opacity:0 }); mv('tag-b2', { opacity:0 });
     }
   },
