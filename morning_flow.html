@@ -6,18 +6,14 @@
 <title>Tokyo Pride 2026 – 朝の受付フロー</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700;900&family=Space+Mono:wght@400;700&display=swap');
-  /* ===== Color Universal Design (CUD) 準拠パレット =====
-     受付(朱)・名札(橙)・テント(青緑)・クローク(青) の4色を
-     P型/D型色覚でも区別できる組み合わせに変更。
-     さらにアイコン(📱✏️⛺🗺️)・枠線スタイル(実線/破線)で二重識別。 */
   :root {
     --bg: #0d0d14; --surface: #16161f; --surface2: #1e1e2e;
     --text: #f0f0f8; --dim: #888899;
-    --accent: #FF6E40;   /* vermilion (受付) */
-    --green: #1AC6A8;    /* bluish green / teal (テント) */
-    --blue: #5BC0EB;     /* sky blue (クローク) */
-    --gold: #FFD93D;     /* yellow (ハイライト) */
-    --orange: #FFB347;   /* amber (名札) - 朱と区別しやすい温かみのある橙 */
+    --accent: #FF6E40;
+    --green: #1AC6A8;
+    --blue: #5BC0EB;
+    --gold: #FFD93D;
+    --orange: #FFB347;
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body {
@@ -36,70 +32,121 @@
 
   .scene { padding: 10px 18px 12px; }
 
-  /* ---- LAYOUT ---- */
+  /* =====================================================
+     LAYOUT
+     構造:
+       左列(~55%): テント(Tシャツ+更衣室) ← ここを大きく
+       右列(~45%): 受付 / 名札 / クローク  ← 縦積みで潰れない
+     高さ380pxに拡大して右列の3ゾーンに余裕を持たせる
+  ===================================================== */
   .layout {
-    position: relative; width: 100%; height: 320px;
+    position: relative; width: 100%; height: 380px;
     background: var(--surface2); border-radius: 14px;
     overflow: hidden; margin-bottom: 10px; border: 1px solid #ffffff08;
   }
 
-  /* STATIONS */
-  .station {
-    position: absolute; border-radius: 8px;
-    display: flex; flex-direction: column; align-items: center; justify-content: center;
-    font-size: 10px; font-weight: 700; text-align: center;
-    transition: all .35s ease;
-  }
-  .station .icon { font-size: 20px; margin-bottom: 2px; }
-  .station .name { font-size: 10px; line-height: 1.3; }
-
-  /* 受付: 朱色・実線 */
-  #st-reception {
-    top: 16px; right: 12px; width: 100px; height: 90px;
-    background: #1f0d06; border: 1.5px solid rgba(255,110,64,.5); color: var(--accent);
-  }
-  /* 名札: 琥珀色・二重線(実線+細い内側)で識別性UP */
-  #st-nametag {
-    top: 16px; right: 130px; width: 100px; height: 90px;
-    background: #1f1608; border: 1.5px solid rgba(255,179,71,.5); color: var(--orange);
-    box-shadow: inset 0 0 0 2px #0d0d14, inset 0 0 0 3px rgba(255,179,71,.3);
-  }
-  /* テント: 青緑・実線 */
+  /* ── テント: 常に左列、幅はcalcで右列に干渉しない ── */
   #st-tent {
-    top: 16px; left: 12px; width: 220px; height: 270px;
+    position: absolute;
+    top: 12px; left: 12px;
+    width: calc(55% - 18px);   /* 右列(45%)と12pxギャップを確保 */
+    height: 310px;
     background: #08201c; border: 1.5px solid rgba(26,198,168,.5); color: var(--green);
+    border-radius: 8px;
+    display: flex; flex-direction: column;
     align-items: stretch; justify-content: flex-start;
-    padding: 8px;
+    padding: 8px 7px;
   }
   #st-tent .tent-label {
     font-size: 11px; font-weight: 700; text-align: center;
-    margin-bottom: 6px; color: var(--green);
+    margin-bottom: 5px; color: var(--green);
+    display: flex; align-items: center; justify-content: center; gap: 4px;
   }
-  #st-tent .tent-label .icon { font-size: 18px; display: block; margin-bottom: 2px; }
+  #st-tent .tent-label .icon { font-size: 16px; }
+
+  /* Tシャツサイズ */
+  .tshirt-section { margin-bottom: 7px; }
+  .tshirt-section .section-hd {
+    font-size: 8px; color: rgba(26,198,168,.7); margin-bottom: 3px;
+    font-family: 'Space Mono', monospace; letter-spacing:.05em;
+    display: flex; align-items: center; gap: 3px;
+  }
   .tshirts {
-    display: flex; gap: 3px; margin-bottom: 6px;
+    display: flex; gap: 3px;
   }
   .tshirts .box {
     flex: 1; background: #0a201c; border: 1px solid rgba(26,198,168,.35);
-    border-radius: 4px; padding: 4px 0; font-size: 9px; text-align: center;
+    border-radius: 4px; padding: 5px 0; font-size: 9px; text-align: center;
     color: var(--green); font-weight: 700;
+  }
+  /* 補足: 羽織るだけOKバナー */
+  .ok-banner {
+    background: rgba(26,198,168,.1); border: 1px dashed rgba(26,198,168,.4);
+    border-radius: 4px; padding: 3px 5px; font-size: 8px;
+    color: rgba(26,198,168,.9); text-align: center; margin-bottom: 7px;
+    line-height: 1.5;
+  }
+
+  /* 更衣室 */
+  .changing-section { flex: 1; }
+  .changing-section .section-hd {
+    font-size: 8px; color: rgba(26,198,168,.7); margin-bottom: 3px;
+    font-family: 'Space Mono', monospace; letter-spacing:.05em;
+    display: flex; align-items: center; gap: 3px;
   }
   .changing {
     display: grid; grid-template-columns: 1fr 1fr; gap: 3px;
   }
   .changing .room {
     background: #0a201c; border: 1px solid rgba(26,198,168,.35);
-    border-radius: 4px; padding: 6px 0; font-size: 9px; text-align: center;
-    color: var(--green);
+    border-radius: 4px; padding: 5px 0; font-size: 8px; text-align: center;
+    color: var(--green); position: relative;
+  }
+  /* 更衣室の「空き」インジケーター（最初は空き状態） */
+  .changing .room::after {
+    content: '空'; position: absolute; top: 1px; right: 2px;
+    font-size: 6px; color: rgba(26,198,168,.5);
+  }
+  /* スタッフ③がハイライトしたら更衣室を「混」表示 */
+  .layout.busy-changing .room::after { content: '混'; color: rgba(255,110,64,.6); }
+
+  /* セルフピック案内 */
+  .self-pick {
+    font-size: 7.5px; color: rgba(26,198,168,.55); text-align: center;
+    margin-top: 5px; font-family: 'Space Mono', monospace;
+    line-height: 1.4;
   }
 
-  /* クローク: 青・破線 (テントとの形状での区別を強化) */
+  /* ── 右列3ゾーン: 受付・名札・クローク ── */
+  /* 共通 */
+  .r-station {
+    position: absolute;
+    right: 12px; width: calc(45% - 18px);   /* 左列と対称 */
+    border-radius: 8px;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    font-size: 10px; font-weight: 700; text-align: center;
+  }
+  .r-station .icon { font-size: 18px; margin-bottom: 2px; }
+  .r-station .name { font-size: 9px; line-height: 1.4; }
+
+  /* 受付: 上部 */
+  #st-reception {
+    top: 12px; height: 84px;
+    background: #1f0d06; border: 1.5px solid rgba(255,110,64,.5); color: var(--accent);
+  }
+  /* 名札: 受付直下（12pxギャップ） */
+  #st-nametag {
+    top: 108px; height: 84px;
+    background: #1f1608; border: 1.5px solid rgba(255,179,71,.5); color: var(--orange);
+    box-shadow: inset 0 0 0 2px #0d0d14, inset 0 0 0 3px rgba(255,179,71,.3);
+  }
+  /* クローク: 下部（bottom固定） */
   #st-cloak {
-    bottom: 16px; right: 12px; width: 218px; height: 80px;
+    bottom: 12px; height: 84px;
     background: #0a1620; border: 1.5px dashed rgba(91,192,235,.55); color: var(--blue);
   }
 
-  /* STAFF */
+  /* ── スタッフ丸 ── */
   .staff {
     position: absolute; width: 22px; height: 22px;
     background: var(--surface); border-radius: 50%;
@@ -113,29 +160,33 @@
     transform: scale(1.2);
     color: var(--gold);
   }
-  #stf1 { top: 90px; right: 50px; }
-  #stf2 { top: 90px; right: 330px; }
-  #stf3 { top: 200px; right: 330px; }
-  #stf4 { top: 230px; right: 50px; }
+  /* 右列スタッフ: 受付と名札の間 */
+  #stf1 { top:  98px; right: calc(45% - 6px); }
+  /* テント内スタッフ: %指定でどの画面幅でもテント内に留まる */
+  #stf2 { top:  90px; left: 22%; }
+  #stf3 { top: 210px; left: 22%; }
+  /* クロークへの誘導スタッフ: 名札とクロークの間 */
+  #stf4 { top: 256px; right: calc(45% - 6px); }
 
-  /* VOLUNTEER avatar */
+  /* ── ボラ⭐ ── */
   .vol {
     position: absolute; width: 22px; height: 22px;
     display: flex; align-items: center; justify-content: center;
     font-size: 16px; z-index: 6;
-    transition: all .6s ease;
+    transition: top .6s ease, left .6s ease, right .6s ease, opacity .4s ease;
     box-shadow: 0 0 14px rgba(255,217,61,.8);
     border-radius: 50%;
   }
 
-  /* ARROW to cloak */
+  /* ── クロークへの矢印 ── */
   .arrow-out {
-    position: absolute; bottom: 50px; right: 240px;
+    position: absolute; bottom: 52px;
+    left: calc(55% - 6px); /* テントと右列の間 */
     color: var(--blue); font-size: 18px; font-weight: 900;
     opacity: 0; transition: opacity .3s;
   }
 
-  /* STEP INFO */
+  /* ── STEP INFO ── */
   .step-info {
     background:var(--surface); border-radius:10px; padding:9px 12px;
     margin-bottom:8px; border-left:3px solid var(--accent); min-height:60px;
@@ -143,14 +194,14 @@
   .step-info h3 { font-size:12px; margin-bottom:3px; }
   .step-info p  { font-size:10.5px; color:var(--dim); line-height:1.6; }
 
-  /* PROGRESS */
+  /* ── PROGRESS ── */
   .progress { display:flex; gap:4px; margin-bottom:8px; }
   .dot { height:4px; flex:1; border-radius:2px; background:#ffffff10; transition:background .3s; }
   .dot.done    { background:var(--accent); }
   .dot.current { background:var(--gold); }
 
-  /* CONTROLS */
-  .controls { display:flex; gap:9px; align-items:center; margin-bottom: 16px; }
+  /* ── CONTROLS ── */
+  .controls { display:flex; gap:9px; align-items:center; margin-bottom: 14px; }
   .btn { padding:8px 16px; border-radius:8px; border:none; cursor:pointer; font-size:12px; font-family:'Noto Sans JP',sans-serif; font-weight:700; transition:all .2s; }
   .btn-p { background:var(--accent); color:#1a0a04; }
   .btn-s { background:#ffffff0f; color:var(--text); border:1px solid #ffffff18; }
@@ -158,7 +209,39 @@
   .btn:not(:disabled):hover { opacity:.85; transform:translateY(-1px); }
   .ctr { font-size:11px; font-family:'Space Mono',monospace; color:var(--dim); margin-left:auto; }
 
-  /* NOTES */
+  /* =====================================================
+     Tシャツ着替え 補足カード
+  ===================================================== */
+  .tshirt-detail {
+    background: rgba(26,198,168,.06);
+    border: 1px solid rgba(26,198,168,.25);
+    border-left: 3px solid var(--green);
+    border-radius: 10px; padding: 12px 14px; margin-bottom: 12px;
+  }
+  .tshirt-detail h4 {
+    font-size: 12px; color: var(--green); margin-bottom: 10px;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .detail-grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 8px;
+  }
+  .detail-block {
+    background: #0a201c; border: 1px solid rgba(26,198,168,.2);
+    border-radius: 7px; padding: 8px 10px;
+  }
+  .detail-block .block-title {
+    font-size: 10px; color: var(--green); font-weight: 700;
+    margin-bottom: 5px; display: flex; align-items: center; gap: 4px;
+  }
+  .detail-block ul { list-style: none; }
+  .detail-block li {
+    font-size: 10px; color: var(--dim); line-height: 1.7;
+    padding-left: 10px; position: relative;
+  }
+  .detail-block li::before { content: '·'; position: absolute; left: 0; color: var(--green); }
+  .detail-block .hi { color: var(--orange); font-weight: 700; }
+
+  /* ── 注意事項 ── */
   .notes {
     background: rgba(255,179,71,.08);
     border: 1px solid rgba(255,179,71,.3);
@@ -174,10 +257,7 @@
     font-size: 11px; color: var(--text); line-height: 1.7;
     padding-left: 14px; position: relative;
   }
-  .notes li::before {
-    content: '・'; color: var(--orange);
-    position: absolute; left: 0;
-  }
+  .notes li::before { content: '・'; color: var(--orange); position: absolute; left: 0; }
   .notes .meta {
     margin-top: 8px; font-size: 10px; color: var(--dim);
     font-family: 'Space Mono', monospace;
@@ -195,49 +275,76 @@
 
   <div class="progress" id="progress"></div>
 
-  <div class="layout">
+  <div class="layout" id="layout">
+
+    <!-- ===== 左列: テント ===== -->
+    <div id="st-tent">
+      <div class="tent-label"><span class="icon">⛺</span>Tシャツ＆着替えテント</div>
+
+      <!-- Tシャツ取得エリア -->
+      <div class="tshirt-section">
+        <div class="section-hd">👕 Tシャツ取得（セルフ）</div>
+        <div class="tshirts">
+          <div class="box">S</div>
+          <div class="box">M</div>
+          <div class="box">L</div>
+          <div class="box">XL</div>
+        </div>
+      </div>
+
+      <!-- 羽織るだけOKバナー -->
+      <div class="ok-banner">
+        上から羽織るだけでもOK！<br>
+        着替えが不要なら更衣室スキップ可
+      </div>
+
+      <!-- 更衣室エリア -->
+      <div class="changing-section">
+        <div class="section-hd">🚪 更衣室（4ブース）</div>
+        <div class="changing">
+          <div class="room">更衣1</div>
+          <div class="room">更衣2</div>
+          <div class="room">更衣3</div>
+          <div class="room">更衣4</div>
+        </div>
+        <div class="self-pick">混雑時は譲り合いを促す<br>スタッフ③が空き案内</div>
+      </div>
+    </div>
+
+    <!-- ===== 右列: 受付 / 名札 / クローク（縦積み） ===== -->
+
     <!-- 受付 -->
-    <div class="station" id="st-reception">
+    <div class="r-station" id="st-reception">
       <div class="icon">📱</div>
-      <div class="name">受付<br>(QR)</div>
+      <div class="name">受付<br>(QR読取)</div>
     </div>
-    <!-- 名札 -->
-    <div class="station" id="st-nametag">
+
+    <!-- 名札 ← 常に受付の真下・テントと干渉しない -->
+    <div class="r-station" id="st-nametag">
       <div class="icon">✏️</div>
-      <div class="name">名札記載<br>(立位)</div>
+      <div class="name">名札記載<br>(立位・自記入)</div>
     </div>
-    <!-- Tシャツ＋更衣室テント -->
-    <div class="station" id="st-tent">
-      <div class="tent-label"><span class="icon">⛺</span>Tシャツ＆着替え</div>
-      <div class="tshirts">
-        <div class="box">S</div><div class="box">M</div><div class="box">L</div><div class="box">XL</div>
-      </div>
-      <div class="changing">
-        <div class="room">更衣1</div>
-        <div class="room">更衣2</div>
-        <div class="room">更衣3</div>
-        <div class="room">更衣4</div>
-      </div>
-    </div>
-    <!-- クロークへの誘導ゾーン -->
-    <div class="station" id="st-cloak">
+
+    <!-- クローク誘導 -->
+    <div class="r-station" id="st-cloak">
       <div class="icon">🗺️</div>
       <div class="name">→ クロークへ<br>(別フロー)</div>
     </div>
 
     <!-- スタッフ -->
-    <div class="staff" id="stf1">①</div>
-    <div class="staff" id="stf2">②</div>
-    <div class="staff" id="stf3">③</div>
-    <div class="staff" id="stf4">④</div>
+    <div class="staff" id="stf1">①</div>  <!-- 受付〜名札の間 -->
+    <div class="staff" id="stf2">②</div>  <!-- テント内・Tシャツエリア -->
+    <div class="staff" id="stf3">③</div>  <!-- テント内・更衣室エリア -->
+    <div class="staff" id="stf4">④</div>  <!-- 名札〜クロークの間 -->
 
     <!-- ボラ本人 -->
-    <div class="vol" id="vol" style="right:14px;top:42px">⭐</div>
+    <div class="vol" id="vol" style="right:14px;top:20px">⭐</div>
 
     <!-- クロークへの矢印 -->
     <div class="arrow-out" id="arr-out">→</div>
   </div>
 
+  <!-- STEP INFO -->
   <div class="step-info" id="step-info">
     <h3>▶ スタート：ボラ到着</h3>
     <p>
@@ -252,6 +359,45 @@
     <span class="ctr" id="counter">0 / 5</span>
   </div>
 
+  <!-- ===== Tシャツ着替え 補足 ===== -->
+  <div class="tshirt-detail">
+    <h4>👕 Tシャツ着替え 詳細ポイント</h4>
+    <div class="detail-grid">
+      <div class="detail-block">
+        <div class="block-title">📦 Tシャツ取得</div>
+        <ul>
+          <li>サイズ別の段ボールから<span class="hi">セルフで</span>取る</li>
+          <li>迷っている人には積極的に声かけ</li>
+          <li>在庫が少なくなったらスタッフ①へ報告</li>
+        </ul>
+      </div>
+      <div class="detail-block">
+        <div class="block-title">🚪 更衣室の使い方</div>
+        <ul>
+          <li>4ブース先着順・譲り合い促す</li>
+          <li><span class="hi">上から羽織るだけ</span>でもOKと案内</li>
+          <li>荷物は更衣室に置かず持ち込み</li>
+        </ul>
+      </div>
+      <div class="detail-block">
+        <div class="block-title">⏱ 混雑時の対応</div>
+        <ul>
+          <li>更衣室待ちが4人超えたら声出し</li>
+          <li>「羽織るだけOK」を繰り返し案内して列を流す</li>
+        </ul>
+      </div>
+      <div class="detail-block">
+        <div class="block-title">➡ 着替え後の誘導</div>
+        <ul>
+          <li>テントを出たらクロークへ</li>
+          <li>スタッフ④がクローク方向へ誘導</li>
+          <li>不要な荷物はクロークへ預けるよう案内</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- 注意事項 -->
   <div class="notes">
     <h4>⚠ 当日の注意事項</h4>
     <ul>
@@ -270,13 +416,16 @@ const TOTAL = 5;
 let step = 0;
 
 const g  = id => document.getElementById(id);
-const mv = (id, right, top) => {
-  const e = g(id); if (!e) return;
-  if (right !== null) { e.style.left = 'auto'; e.style.right = right; }
-  if (top  !== null) e.style.top  = top;
-};
 const hl = (id, on) => { const e = g(id); if (!e) return; on ? e.classList.add('hl') : e.classList.remove('hl'); };
 const ao = (id, on) => { const e = g(id); if (!e) return; e.style.opacity = on ? '1' : '0'; };
+
+// left/right どちらでも扱える移動関数
+function mv(id, { left, right, top } = {}) {
+  const e = g(id); if (!e) return;
+  if (right !== undefined) { e.style.left = 'auto';  e.style.right = right; }
+  if (left  !== undefined) { e.style.right = 'auto'; e.style.left  = left;  }
+  if (top   !== undefined) e.style.top = top;
+}
 
 const steps = [
   {
@@ -284,14 +433,14 @@ const steps = [
     desc: "ボラがスタッフ①にスマホのQRを提示。読み取り完了したら『名札書いてTシャツ受け取ってね』と案内。",
     run: () => {
       hl('stf1', true);
-      mv('vol', '52px', '42px');
+      mv('vol', { right: '40px', top: '22px' });   // 受付ゾーン横
     }
   },
   {
     title: "② 名札記載（本人記入）",
     desc: "名札机へ移動。立ったまま、好きな色のペンで自分の名前を記入。スタッフ①が引き続き案内。",
     run: () => {
-      mv('vol', '170px', '42px');
+      mv('vol', { right: '40px', top: '118px' });  // 名札ゾーン横（受付の真下）
     }
   },
   {
@@ -300,7 +449,7 @@ const steps = [
     run: () => {
       hl('stf1', false);
       hl('stf2', true);
-      mv('vol', '330px', '64px');
+      mv('vol', { left: '28%', top: '82px' });     // テント内・Tシャツエリア(%指定でどの画面幅でも安全)
     }
   },
   {
@@ -309,7 +458,8 @@ const steps = [
     run: () => {
       hl('stf2', false);
       hl('stf3', true);
-      mv('vol', '330px', '160px');
+      g('layout').classList.add('busy-changing');   // 更衣室を「混」表示
+      mv('vol', { left: '28%', top: '195px' });    // テント内・更衣室エリア
     }
   },
   {
@@ -318,7 +468,8 @@ const steps = [
     run: () => {
       hl('stf3', false);
       hl('stf4', true);
-      mv('vol', '110px', '232px');
+      g('layout').classList.remove('busy-changing');
+      mv('vol', { right: '40px', top: '290px' }); // クロークゾーン横
       ao('arr-out', true);
     }
   }
@@ -344,7 +495,8 @@ function reset() {
   g('next-btn').disabled = false;
   ['stf1','stf2','stf3','stf4'].forEach(id => hl(id, false));
   ao('arr-out', false);
-  mv('vol', '14px', '42px');
+  g('layout').classList.remove('busy-changing');
+  mv('vol', { right: '14px', top: '20px' });
   updateProg();
 }
 
