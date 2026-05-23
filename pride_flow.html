@@ -6,10 +6,15 @@
 <title>Tokyo Pride 2026 – 動線シミュレーター</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700;900&family=Space+Mono:wght@400;700&display=swap');
+  /* ===== Color Universal Design (CUD) 準拠パレット =====
+     弁当チーム(緑)と水分チーム(青)を明度差・色相差ともに大きくとる */
   :root {
     --bg: #0d0d14; --surface: #16161f; --surface2: #1e1e2e;
-    --text: #f0f0f8; --dim: #888899; --accent: #FF3A5C;
-    --green: #4CAF50; --blue: #64B5F6; --gold: #FFD700;
+    --text: #f0f0f8; --dim: #888899;
+    --accent: #FF6E40;   /* vermilion */
+    --green: #1AC6A8;    /* bluish green / teal (弁当系) */
+    --blue: #5BC0EB;     /* sky blue (水分系) */
+    --gold: #FFD93D;     /* yellow (ハイライト) */
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body {
@@ -35,7 +40,7 @@
     overflow: hidden; margin-bottom: 12px; border: 1px solid #ffffff08;
     transform: scale(0.75);
     transform-origin: top center;
-    margin-bottom: -150px; /* scale(0.75) による下の空白をほぼ詰める */
+    margin-bottom: -150px;
   }
 
   /* ZONES */
@@ -46,20 +51,22 @@
   }
   #z-stock {
     top:8px; left:8px; right:8px; height:62px;
-    background:#181828; border:1.5px dashed #ffffff18; color:#444;
+    background:#181828; border:1.5px dashed #ffffff18; color:#777;
   }
+  /* 弁当ゾーン: teal(青緑) + 🍱アイコン  */
   #z-bento {
     top:84px; left:8px; width:44%; height:50px;
-    background:#0d2010; border:1.5px solid #4CAF5048; color:var(--green);
+    background:#08201c; border:1.5px solid rgba(26,198,168,.5); color:var(--green);
   }
+  /* 水分ゾーン: 青系 + 💧アイコン (実線ではなく点線でゾーン区別を強化) */
   #z-drink {
     top:84px; right:8px; width:44%; height:50px;
-    background:#06060f; border:1.5px solid #2196F348; color:var(--blue);
+    background:#0a1620; border:1.5px dashed rgba(91,192,235,.5); color:var(--blue);
   }
   #z-exit {
     bottom:8px; left:50%; transform:translateX(-50%);
     width:68px; height:30px;
-    background:#1e0808; border:1.5px solid #FF3A5C44; color:var(--accent);
+    background:#1e0d08; border:1.5px solid rgba(255,110,64,.5); color:var(--accent);
     font-size:10px;
   }
 
@@ -107,7 +114,7 @@
   /* CONTROLS */
   .controls { display:flex; gap:9px; align-items:center; }
   .btn { padding:8px 16px; border-radius:8px; border:none; cursor:pointer; font-size:12px; font-family:'Noto Sans JP',sans-serif; font-weight:700; transition:all .2s; }
-  .btn-p { background:var(--accent); color:white; }
+  .btn-p { background:var(--accent); color:#1a0a04; }
   .btn-s { background:#ffffff0f; color:var(--text); border:1px solid #ffffff18; }
   .btn:disabled { opacity:.4; cursor:default; }
   .btn:not(:disabled):hover { opacity:.85; transform:translateY(-1px); }
@@ -122,8 +129,8 @@
   .nav-link:hover { background: #ffffff16; transform: translateY(-1px); }
 
   @keyframes pulse {
-    0%,100% { box-shadow:0 0 0 0 rgba(255,215,0,.5); }
-    50%      { box-shadow:0 0 0 7px rgba(255,215,0,0); }
+    0%,100% { box-shadow:0 0 0 0 rgba(255,217,61,.6); }
+    50%      { box-shadow:0 0 0 7px rgba(255,217,61,0); }
   }
   .hl { animation:pulse 1.2s infinite; border-color:var(--gold)!important; color:var(--gold)!important; }
 </style>
@@ -144,65 +151,60 @@
     <div class="zone" id="z-drink">💧 水分配布</div>
     <div class="zone" id="z-exit">出口 →</div>
 
-    <!-- Bento queue line (left column) -->
-    <div style="position:absolute;left:19px;top:145px;bottom:42px;width:2px;background:#4CAF5018;border-radius:1px"></div>
-    <!-- Drink queue line (right column) -->
-    <div style="position:absolute;right:19px;top:145px;bottom:42px;width:2px;background:#2196F318;border-radius:1px"></div>
+    <!-- Bento queue line (left column・実線) -->
+    <div style="position:absolute;left:19px;top:145px;bottom:42px;width:2px;background:rgba(26,198,168,.25);border-radius:1px"></div>
+    <!-- Drink queue line (right column・点線で区別) -->
+    <div style="position:absolute;right:19px;top:145px;bottom:42px;width:2px;background-image: linear-gradient(to bottom, rgba(91,192,235,.35) 50%, transparent 50%);background-size: 2px 8px;border-radius:1px"></div>
     <!-- Horizontal path bento→drink queue -->
     <div style="position:absolute;top:178px;left:31px;right:31px;height:2px;background:#ffffff08"></div>
 
-    <!-- Queue labels -->
-    <div style="position:absolute;left:8px;top:148px;font-size:8px;color:#4CAF5044;font-family:'Space Mono',monospace;">弁当列</div>
-    <div style="position:absolute;right:8px;top:148px;font-size:8px;color:#2196F344;font-family:'Space Mono',monospace;text-align:right">水分列</div>
+    <!-- Queue labels (アイコン付きで色だけに頼らない) -->
+    <div style="position:absolute;left:8px;top:148px;font-size:8px;color:rgba(26,198,168,.7);font-family:'Space Mono',monospace;">🍱弁当列</div>
+    <div style="position:absolute;right:8px;top:148px;font-size:8px;color:rgba(91,192,235,.7);font-family:'Space Mono',monospace;text-align:right">💧水分列</div>
 
     <!-- Static queue arrows -->
-    <div class="arr" style="left:12px;top:280px;color:#4CAF5030;font-size:14px">↑</div>
-    <div class="arr" style="left:12px;top:315px;color:#4CAF5030;font-size:14px">↑</div>
-    <div class="arr" style="right:13px;top:280px;color:#2196F330;font-size:14px">↑</div>
-    <div class="arr" style="right:13px;top:315px;color:#2196F330;font-size:14px">↑</div>
+    <div class="arr" style="left:12px;top:280px;color:rgba(26,198,168,.4);font-size:14px">↑</div>
+    <div class="arr" style="left:12px;top:315px;color:rgba(26,198,168,.4);font-size:14px">↑</div>
+    <div class="arr" style="right:13px;top:280px;color:rgba(91,192,235,.4);font-size:14px">↑</div>
+    <div class="arr" style="right:13px;top:315px;color:rgba(91,192,235,.4);font-size:14px">↑</div>
 
     <!-- Dynamic arrows -->
-    <div class="arr" id="arr-right" style="top:170px;left:50%;transform:translateX(-50%);color:#FFD700bb;font-size:22px;opacity:0">→</div>
-    <div class="arr" id="arr-down2" style="top:200px;right:13px;color:#FF3A5Cbb;font-size:16px;opacity:0">↑</div>
+    <div class="arr" id="arr-right" style="top:170px;left:50%;transform:translateX(-50%);color:#FFD93Dcc;font-size:22px;opacity:0">→</div>
+    <div class="arr" id="arr-down2" style="top:200px;right:13px;color:#FF6E40cc;font-size:16px;opacity:0">↑</div>
 
-    <!-- ===== STAFF ===== -->
-    <!-- S1: 補充 (stock area left) -->
-    <div class="staff" id="s1" style="top:14px;left:30px;background:#0d2010;border-color:#4CAF50;color:#4CAF50">S1</div>
+    <!-- ===== STAFF =====
+         弁当チーム(S1,S2,S3): 青緑色 + S番号
+         水分チーム(S4,S5):    青色   + S番号
+         色だけでなく番号でも識別可 -->
+    <div class="staff" id="s1" style="top:14px;left:30px;background:#08201c;border-color:#1AC6A8;color:#1AC6A8">S1</div>
     <div class="lbl"   id="l1" style="top:44px;left:24px;opacity:0">補充</div>
-    <!-- S2: 注文受付 (bento counter, visitor-side left) -->
-    <div class="staff" id="s2" style="top:92px;left:14px;background:#0d2010;border-color:#4CAF50;color:#4CAF50">S2</div>
+    <div class="staff" id="s2" style="top:92px;left:14px;background:#08201c;border-color:#1AC6A8;color:#1AC6A8">S2</div>
     <div class="lbl"   id="l2" style="top:122px;left:10px;opacity:0">注文受付</div>
-    <!-- S3: 取出・箸付け (bento counter, right) -->
-    <div class="staff" id="s3" style="top:92px;left:76px;background:#0d2010;border-color:#4CAF50;color:#4CAF50">S3</div>
+    <div class="staff" id="s3" style="top:92px;left:76px;background:#08201c;border-color:#1AC6A8;color:#1AC6A8">S3</div>
     <div class="lbl"   id="l3" style="top:122px;left:62px;opacity:0">取出・箸付</div>
-    <!-- S4: 取り出し (stock area right) -->
-    <div class="staff" id="s4" style="top:14px;right:28px;background:#06060f;border-color:#2196F3;color:#64B5F6">S4</div>
+    <div class="staff" id="s4" style="top:14px;right:28px;background:#0a1620;border-color:#5BC0EB;color:#5BC0EB">S4</div>
     <div class="lbl"   id="l4" style="top:44px;right:22px;opacity:0">取り出し</div>
-    <!-- S5: 拭き・渡し (drink counter) -->
-    <div class="staff" id="s5" style="top:92px;right:14px;background:#06060f;border-color:#2196F3;color:#64B5F6">S5</div>
+    <div class="staff" id="s5" style="top:92px;right:14px;background:#0a1620;border-color:#5BC0EB;color:#5BC0EB">S5</div>
     <div class="lbl"   id="l5" style="top:122px;right:10px;opacity:0">拭き・渡し</div>
 
     <!-- ===== VISITORS ===== -->
-    <!-- Bento queue (left column) — static waiters -->
     <div class="visitor" id="vb4" style="left:8px;top:510px">😊</div>
     <div class="visitor" id="vb3" style="left:8px;top:465px">🙂</div>
     <div class="visitor" id="vb2" style="left:8px;top:418px">😄</div>
     <div class="visitor" id="vb1" style="left:8px;top:370px">🥰</div>
 
-    <!-- Drink queue (right column) — water-only visitors -->
     <div class="visitor" id="vd3" style="right:8px;top:510px">🫗</div>
     <div class="visitor" id="vd2" style="right:8px;top:465px">💦</div>
     <div class="visitor" id="vd1" style="right:8px;top:418px">🧃</div>
 
-    <!-- Active visitor (starred) — goes through full flow -->
-    <div class="visitor" id="va" style="left:8px;top:320px;box-shadow:0 0 14px rgba(255,215,0,.7)">⭐</div>
+    <div class="visitor" id="va" style="left:8px;top:320px;box-shadow:0 0 14px rgba(255,217,61,.8)">⭐</div>
   </div>
 
   <div class="step-info" id="step-info">
     <h3>▶ スタート：待機状態</h3>
     <p>
-      左列：弁当を受け取ってから水分へ向かう来場者<br>
-      右列：水分のみを取りに来た来場者（🫗💦🧃）<br>
+      左列（🍱）：弁当を受け取ってから水分へ向かう来場者<br>
+      右列（💧）：水分のみを取りに来た来場者（🫗💦🧃）<br>
       ⭐ の動線をステップで追います。
     </p>
   </div>
@@ -235,7 +237,6 @@ const lbl = (id, on) => { const e = g(id); if (!e) return; e.style.opacity = on 
 const ao  = (id, on) => { const e = g(id); if (!e) return; e.style.opacity = on ? '1' : '0'; };
 const fadeOut = id   => { setTimeout(() => { const e = g(id); if (e) e.style.opacity = '0'; }, 400); };
 
-// カウンター手前のY座標（スタッフより下、カウンターの手前）
 const BENTO_FRONT = '148px';
 const DRINK_FRONT = '148px';
 
@@ -268,7 +269,7 @@ const steps = [
       hl('s2', false); lbl('l2', false);
       hl('s3', true);  lbl('l3', true);
       hl('s1', true);  lbl('l1', true);
-      mv('s3', '76px', '20px'); // reach to stock
+      mv('s3', '76px', '20px');
     }
   },
   {
@@ -286,15 +287,12 @@ const steps = [
     desc: "⭐ が水分列の最後尾へ横移動。同時に vb1 が弁当カウンター手前へ進み、S3が次の弁当準備に入ります。【並列処理スタート】",
     run: () => {
       ao('arr-right', false);
-      // ⭐ moves to back of drink queue
       mv('va', 'calc(100% - 30px)', '555px');
       ao('arr-down2', true);
-      // vb1 steps up to bento front, others advance
       mv('vb1', '8px', BENTO_FRONT);
       mv('vb2', '8px', '320px');
       mv('vb3', '8px', '370px');
       mv('vb4', '8px', '418px');
-      // S3 starts preparing next bento (parallel)
       hl('s3', true); lbl('l3', true);
     }
   },
@@ -303,7 +301,6 @@ const steps = [
     desc: "左：S3が vb1 に弁当を手渡し → vb1 は水分列の最後尾へ合流。右：S4・S5が🫗に飲み物を渡し、列が前進。2レーンが同時に動きます。",
     run: () => {
       ao('arr-down2', false);
-      // 右レーン：水分処理
       hl('s4', true); lbl('l4', true);
       hl('s5', true); lbl('l5', true);
       mv('vd1', 'calc(50% - 11px)', '580px');
@@ -311,12 +308,9 @@ const steps = [
       mv('vd2', 'calc(100% - 30px)', DRINK_FRONT);
       mv('vd3', 'calc(100% - 30px)', '418px');
       mv('va',  'calc(100% - 30px)', '465px');
-      // 左レーン：vb1 が弁当を受け取って水分列の最後尾へ合流
       setTimeout(() => {
         hl('s3', false); lbl('l3', false);
-        // vb1 を水分列の最後尾（⭐のさらに後ろ）へ
         mv('vb1', 'calc(100% - 30px)', '555px');
-        // 後続を1つずつ前進
         mv('vb2', '8px', BENTO_FRONT);
         mv('vb3', '8px', '320px');
         mv('vb4', '8px', '370px');
@@ -329,18 +323,15 @@ const steps = [
     run: () => {
       hl('s4', false); lbl('l4', false);
       hl('s5', false); lbl('l5', false);
-      // 右レーン：水分の連続処理
       mv('vd2', 'calc(50% - 11px)', '580px'); fadeOut('vd2');
       mv('vd3', 'calc(100% - 30px)', DRINK_FRONT);
       mv('va',  'calc(100% - 30px)', '418px');
-      // vb1 も水分列を1つ前進
       mv('vb1', 'calc(100% - 30px)', '510px');
       setTimeout(() => {
         mv('vd3', 'calc(50% - 11px)', '580px'); fadeOut('vd3');
         mv('va',  'calc(100% - 30px)', DRINK_FRONT);
         mv('vb1', 'calc(100% - 30px)', '465px');
       }, 900);
-      // 左レーン：S3が vb2 の弁当を準備（並列）
       hl('s3', true); lbl('l3', true);
     }
   },
@@ -351,9 +342,7 @@ const steps = [
       hl('s3', false); lbl('l3', false);
       hl('s4', true); lbl('l4', true);
       hl('s5', true); lbl('l5', true);
-      // vb1 を1つ前進
       mv('vb1', 'calc(100% - 30px)', '418px');
-      // vb2 を弁当受付へ
       mv('vb2', '8px', BENTO_FRONT);
       mv('vb3', '8px', '320px');
       mv('vb4', '8px', '370px');
@@ -362,7 +351,6 @@ const steps = [
         hl('s5', false); lbl('l5', false);
         mv('va', 'calc(50% - 11px)', '580px');
         fadeOut('va');
-        // S3 が次の弁当準備に入る
         hl('s3', true); lbl('l3', true);
       }, 600);
     }
@@ -371,16 +359,11 @@ const steps = [
     title: "⑨ 【並列】vb2 が弁当を受取・水分列へ合流／サイクル継続",
     desc: "S3 が vb2 に弁当を手渡し → vb2 は水分列の最後尾へ。vb1 もさらに前進。動線は止まらず回り続けます。【定常運用フェーズ】",
     run: () => {
-      // S3 が vb2 に弁当を渡す
       hl('s3', false); lbl('l3', false);
-      // vb2 を水分列の最後尾へ合流
       mv('vb2', 'calc(100% - 30px)', '555px');
-      // 後続も1つずつ前進
       mv('vb3', '8px', BENTO_FRONT);
       mv('vb4', '8px', '320px');
-      // vb1 を水分受付手前へ
       mv('vb1', 'calc(100% - 30px)', DRINK_FRONT);
-      // S1 補充も再ハイライト（在庫管理が継続することを示唆）
       setTimeout(() => {
         hl('s1', true); lbl('l1', true);
       }, 500);
@@ -401,8 +384,8 @@ function nextStep() {
 function reset() {
   step = 0;
   g('step-info').innerHTML = `<h3>▶ スタート：待機状態</h3>
-    <p>左列：弁当を受け取ってから水分へ向かう来場者<br>
-    右列：水分のみを取りに来た来場者（🫗💦🧃）<br>
+    <p>左列（🍱）：弁当を受け取ってから水分へ向かう来場者<br>
+    右列（💧）：水分のみを取りに来た来場者（🫗💦🧃）<br>
     ⭐ の動線をステップで追います。</p>`;
   g('counter').textContent = '0 / ' + TOTAL;
   g('next-btn').textContent = '次のステップ ▶';
