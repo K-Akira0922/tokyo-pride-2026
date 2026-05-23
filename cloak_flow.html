@@ -6,11 +6,19 @@
 <title>Tokyo Pride 2026 – クローク受け渡しフロー</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700;900&family=Space+Mono:wght@400;700&display=swap');
+  /* ===== Color Universal Design (CUD) 準拠パレット =====
+     A棚(朱)とB棚(青)は色相+左右位置+A/Bラベルの3重で識別。
+     カウンター(緑)→青緑へ変更し、朱とのコントラストを高める。
+     さらにA棚のセルは「実線枠」、B棚のセルは「破線枠」で形状区別を追加。 */
   :root {
     --bg: #0d0d14; --surface: #16161f; --surface2: #1e1e2e;
-    --text: #f0f0f8; --dim: #888899; --accent: #FF3A5C;
-    --green: #4CAF50; --blue: #64B5F6; --gold: #FFD700; --orange: #FF8C00;
-    --red: #EF5350;
+    --text: #f0f0f8; --dim: #888899;
+    --accent: #FF6E40;   /* vermilion (警告・強調) */
+    --green: #1AC6A8;    /* bluish green (カウンター) */
+    --blue: #5BC0EB;     /* sky blue (B棚) */
+    --gold: #FFD93D;     /* yellow (アクティブ・ハイライト) */
+    --orange: #FFB347;   /* amber (補助) */
+    --red: #FF6E40;      /* A棚 = accent と同色（同時には出ない用途） */
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body {
@@ -39,8 +47,8 @@
     font-family: 'Noto Sans JP', sans-serif; border: none; cursor: pointer;
     background: none; color: var(--dim); transition: all .2s;
   }
-  .mode-btn.active-in  { background: var(--red);  color: #fff; pointer-events: none; }
-  .mode-btn.active-out { background: var(--blue); color: #000; pointer-events: none; }
+  .mode-btn.active-in  { background: var(--red);  color: #1a0a04; pointer-events: none; }
+  .mode-btn.active-out { background: var(--blue); color: #06121a; pointer-events: none; }
   .mode-btn:not(.active-in):not(.active-out):hover { background: #ffffff0f; color: var(--text); }
 
   /* LEGEND */
@@ -73,11 +81,11 @@
   }
   #shelf-A {
     left: 12px;
-    background: rgba(239,83,80,.06); border: 1.5px solid rgba(239,83,80,.3);
+    background: rgba(255,110,64,.06); border: 1.5px solid rgba(255,110,64,.4);
   }
   #shelf-B {
     right: 12px;
-    background: rgba(100,181,246,.06); border: 1.5px solid rgba(100,181,246,.3);
+    background: rgba(91,192,235,.06); border: 1.5px dashed rgba(91,192,235,.5);
   }
   .shelf-title {
     font-size: 9px; font-weight: 700; font-family: 'Space Mono', monospace;
@@ -95,28 +103,28 @@
     font-size: 8px; font-weight: 700; font-family: 'Space Mono', monospace;
     transition: all .45s ease; cursor: default;
   }
-  /* A棚（赤系） */
-  .sbox.a-empty { background: #1a0b0b; border: 1px solid rgba(239,83,80,.2); color: rgba(239,83,80,.35); }
-  .sbox.a-used  { background: #3a1010; border: 1px solid rgba(239,83,80,.6); color: var(--red);
-                  box-shadow: 0 0 5px rgba(239,83,80,.25); }
-  .sbox.a-active{ background: #FFD70020; border: 2px solid var(--gold); color: var(--gold);
-                  box-shadow: 0 0 10px rgba(255,215,0,.5); }
-  /* B棚（青系） */
-  .sbox.b-empty { background: #060d18; border: 1px solid rgba(100,181,246,.2); color: rgba(100,181,246,.35); }
-  .sbox.b-used  { background: #0d2030; border: 1px solid rgba(100,181,246,.6); color: var(--blue);
-                  box-shadow: 0 0 5px rgba(100,181,246,.25); }
-  .sbox.b-active{ background: #FFD70020; border: 2px solid var(--gold); color: var(--gold);
-                  box-shadow: 0 0 10px rgba(255,215,0,.5); }
+  /* A棚（朱系・実線枠） */
+  .sbox.a-empty { background: #1a0a06; border: 1px solid rgba(255,110,64,.3); color: rgba(255,110,64,.4); }
+  .sbox.a-used  { background: #3a1810; border: 1px solid rgba(255,110,64,.7); color: var(--red);
+                  box-shadow: 0 0 5px rgba(255,110,64,.3); }
+  .sbox.a-active{ background: #FFD93D25; border: 2px solid var(--gold); color: var(--gold);
+                  box-shadow: 0 0 10px rgba(255,217,61,.5); }
+  /* B棚（青系・破線枠で形状差を明示） */
+  .sbox.b-empty { background: #08131e; border: 1px dashed rgba(91,192,235,.3); color: rgba(91,192,235,.4); }
+  .sbox.b-used  { background: #0d2535; border: 1px dashed rgba(91,192,235,.7); color: var(--blue);
+                  box-shadow: 0 0 5px rgba(91,192,235,.3); }
+  .sbox.b-active{ background: #FFD93D25; border: 2px solid var(--gold); color: var(--gold);
+                  box-shadow: 0 0 10px rgba(255,217,61,.5); }
 
   /* shelf rule note */
   .shelf-rule {
     margin-top: 5px; font-size: 7px; line-height: 1.5;
     font-family: 'Space Mono', monospace; text-align: center;
   }
-  #shelf-A .shelf-rule { color: rgba(239,83,80,.45); }
-  #shelf-B .shelf-rule { color: rgba(100,181,246,.45); }
+  #shelf-A .shelf-rule { color: rgba(255,110,64,.55); }
+  #shelf-B .shelf-rule { color: rgba(91,192,235,.55); }
 
-  /* ──── RACK (中央 ロッカー状のオブジェクト) ──── */
+  /* ──── RACK ──── */
   .rack-area {
     position: absolute; top: 24px;
     left: 50%; transform: translateX(-50%);
@@ -133,7 +141,7 @@
   #counter {
     position: absolute; bottom: 68px; left: 50%; transform: translateX(-50%);
     width: 172px; height: 36px;
-    background: #0d1a0d; border: 1.5px solid rgba(76,175,80,.35); border-radius: 8px;
+    background: #08201c; border: 1.5px solid rgba(26,198,168,.45); border-radius: 8px;
     display: flex; align-items: center; justify-content: center;
     font-size: 9px; color: var(--green); font-weight: 700;
     white-space: nowrap; text-align: center; padding: 0 6px;
@@ -147,11 +155,11 @@
     transition: all .4s ease;
   }
   .staff.hl {
-    box-shadow: 0 0 16px rgba(255,215,0,.9);
+    box-shadow: 0 0 16px rgba(255,217,61,.9);
     transform: scale(1.25);
     border-color: var(--gold) !important;
     color: var(--gold) !important;
-    background: #1a1600 !important;
+    background: #1a1500 !important;
   }
   .stf-lbl {
     position: absolute; font-size: 7.5px; font-family: 'Space Mono', monospace;
@@ -159,16 +167,16 @@
     white-space: nowrap; text-align: center;
   }
   /* A2: 棚担当（左寄り） */
-  #stA_haichi   { top:118px; left:20%; background:#1a0808; border-color:rgba(239,83,80,.6); color:var(--red); }
+  #stA_haichi   { top:118px; left:20%; background:#1f0a04; border-color:rgba(255,110,64,.6); color:var(--red); }
   #lbl_A_haichi { top:147px; left:calc(20% - 4px); }
   /* A1: 受付担当（カウンター左） */
-  #stA_uketsuke   { bottom:74px; left:34%; background:#1a0808; border-color:rgba(239,83,80,.5); color:var(--red); }
+  #stA_uketsuke   { bottom:74px; left:34%; background:#1f0a04; border-color:rgba(255,110,64,.55); color:var(--red); }
   #lbl_A_uketsuke { bottom:56px; left:calc(34% - 4px); }
   /* B1: 受付担当（カウンター右） */
-  #stB_uketsuke   { bottom:74px; right:34%; background:#060d18; border-color:rgba(100,181,246,.5); color:var(--blue); }
+  #stB_uketsuke   { bottom:74px; right:34%; background:#08131e; border-color:rgba(91,192,235,.55); color:var(--blue); }
   #lbl_B_uketsuke { bottom:56px; right:calc(34% - 4px); }
   /* B2: 棚担当（右寄り） */
-  #stB_haichi   { top:118px; right:20%; background:#060d18; border-color:rgba(100,181,246,.6); color:var(--blue); }
+  #stB_haichi   { top:118px; right:20%; background:#08131e; border-color:rgba(91,192,235,.6); color:var(--blue); }
   #lbl_B_haichi { top:147px; right:calc(20% - 4px); }
 
   /* ──── VISITOR / BAG ──── */
@@ -221,8 +229,8 @@
   /* CONTROLS */
   .controls { display: flex; gap: 9px; align-items: center; margin-bottom: 14px; }
   .btn { padding: 8px 16px; border-radius: 8px; border: none; cursor: pointer; font-size: 12px; font-family: 'Noto Sans JP',sans-serif; font-weight: 700; transition: all .2s; }
-  .btn-p { background: var(--red); color: white; }
-  .btn-p.mode-out { background: var(--blue); color: #000; }
+  .btn-p { background: var(--red); color: #1a0a04; }
+  .btn-p.mode-out { background: var(--blue); color: #06121a; }
   .btn-s { background: #ffffff0f; color: var(--text); border: 1px solid #ffffff18; }
   .btn:disabled { opacity: .4; cursor: default; }
   .btn:not(:disabled):hover { opacity: .85; transform: translateY(-1px); }
@@ -230,7 +238,7 @@
 
   /* TAG RULE BOX */
   .tag-rule {
-    background: rgba(255,215,0,.05); border: 1px solid rgba(255,215,0,.25);
+    background: rgba(255,217,61,.05); border: 1px solid rgba(255,217,61,.25);
     border-left: 3px solid var(--gold); border-radius: 10px;
     padding: 10px 14px; margin-bottom: 14px;
   }
@@ -244,8 +252,8 @@
 
   /* NOTES */
   .notes {
-    background: rgba(255,58,92,.05);
-    border: 1px solid rgba(255,58,92,.2);
+    background: rgba(255,110,64,.06);
+    border: 1px solid rgba(255,110,64,.25);
     border-left: 3px solid var(--accent);
     border-radius: 10px; padding: 12px 14px; margin-bottom: 14px;
   }
@@ -261,7 +269,7 @@
     margin-top: 10px; width: 100%; border-collapse: collapse; font-size: 10px;
   }
   .notes .staff-table td {
-    padding: 4px 8px; border-bottom: 1px solid rgba(255,58,92,.1); color: var(--text);
+    padding: 4px 8px; border-bottom: 1px solid rgba(255,110,64,.12); color: var(--text);
   }
   .notes .staff-table td:first-child { color: var(--dim); white-space: nowrap; width: 40%; }
   .notes .staff-table td:last-child { color: var(--gold); font-family: 'Space Mono', monospace; font-weight: 700; text-align: right; }
@@ -296,15 +304,15 @@
 
   <div class="progress" id="progress"></div>
 
-  <!-- 凡例 -->
+  <!-- 凡例: A=実線枠/朱, B=破線枠/青 で色覚に依存しない区別 -->
   <div class="legend">
     <div class="legend-item">
-      <div class="leg-dot" style="background:#1a0808;border:2px solid rgba(239,83,80,.6);color:var(--red);">A1</div>
-      <span>A1・A2（赤）</span>
+      <div class="leg-dot" style="background:#1f0a04;border:2px solid rgba(255,110,64,.7);color:var(--red);">A1</div>
+      <span>A1・A2（朱・実線枠）</span>
     </div>
     <div class="legend-item">
-      <div class="leg-dot" style="background:#060d18;border:2px solid rgba(100,181,246,.6);color:var(--blue);">B1</div>
-      <span>B1・B2（青）</span>
+      <div class="leg-dot" style="background:#08131e;border:2px dashed rgba(91,192,235,.7);color:var(--blue);">B1</div>
+      <span>B1・B2（青・破線枠）</span>
     </div>
     <div class="legend-item">⭐🌟 ボランティア</div>
   </div>
@@ -312,25 +320,25 @@
   <!-- LAYOUT -->
   <div class="layout">
 
-    <!-- A棚（左・赤） -->
+    <!-- A棚（左・朱・実線枠） -->
     <div class="shelf-unit" id="shelf-A">
-      <div class="shelf-title">A 棚（赤）</div>
+      <div class="shelf-title">A 棚（朱・実線）</div>
       <div class="shelf-grid" id="grid-A">
         <!-- JS で生成 -->
       </div>
       <div class="shelf-rule">↓ 小→大 上から詰める<br>列が埋まったら→隣列へ</div>
     </div>
 
-    <!-- B棚（右・青） -->
+    <!-- B棚（右・青・破線枠） -->
     <div class="shelf-unit" id="shelf-B">
-      <div class="shelf-title">B 棚（青）</div>
+      <div class="shelf-title">B 棚（青・破線）</div>
       <div class="shelf-grid" id="grid-B">
         <!-- JS で生成 -->
       </div>
       <div class="shelf-rule">↓ 小→大 上から詰める<br>列が埋まったら→隣列へ</div>
     </div>
 
-    <!-- 中央ラック（ロッカー風） -->
+    <!-- 中央ラック -->
     <div class="rack-area">
       <div class="rack">
         <div class="rack-shelf"></div><div class="rack-shelf"></div>
@@ -367,23 +375,19 @@
     <!-- ボランティア B側（右） -->
     <div class="vol"  id="vol2" style="left:calc(50% + 14px); bottom:20px; opacity:1;">🌟</div>
 
-    <!-- 荷物 A側 -->
+    <!-- 荷物 -->
     <div class="bagbox" id="bag">🎒</div>
-    <!-- 荷物 B側 -->
     <div class="bagbox" id="bag2" style="opacity:0;">🎒</div>
 
-    <!-- タグバッジ A側 (荷物用・半券) -->
+    <!-- タグバッジ -->
     <div class="tag-badge" id="tag-a1" style="opacity:0;">A-6</div>
-    <div class="tag-badge" id="tag-a2" style="opacity:0; background:rgba(239,83,80,.9); color:#fff;">A-6</div>
-    <!-- タグバッジ B側 (荷物用・半券) -->
-    <div class="tag-badge" id="tag-b1" style="opacity:0; background:rgba(100,181,246,.9); color:#000;">B-4</div>
-    <div class="tag-badge" id="tag-b2" style="opacity:0; background:rgba(100,181,246,.9); color:#000;">B-4</div>
+    <div class="tag-badge" id="tag-a2" style="opacity:0; background:rgba(255,110,64,.95); color:#1a0a04;">A-6</div>
+    <div class="tag-badge" id="tag-b1" style="opacity:0; background:rgba(91,192,235,.95); color:#06121a;">B-4</div>
+    <div class="tag-badge" id="tag-b2" style="opacity:0; background:rgba(91,192,235,.95); color:#06121a;">B-4</div>
 
-    <!-- 矢印 A側 -->
+    <!-- 矢印 -->
     <div class="arr" id="arr-A-cnt" style="left:30%; bottom:62px; color:var(--red);">↑</div>
-    <!-- 矢印 B側 -->
     <div class="arr" id="arr-B-cnt" style="right:30%; bottom:62px; color:var(--blue);">↑</div>
-    <!-- 棚への矢印 -->
     <div class="arr" id="arr-to-shelfA" style="left:20%; top:112px; color:var(--red);">↑</div>
     <div class="arr" id="arr-to-shelfB" style="right:20%; top:112px; color:var(--blue);">↑</div>
 
@@ -393,7 +397,7 @@
   <div class="step-info" id="step-info">
     <h3 id="step-title">▶ スタート：クロークへ来場</h3>
     <p id="step-desc">ボランティアが朝、荷物を持ってクロークに来たところから始まります。<br>
-    Aチーム（赤）が左棚、Bチーム（青）が右棚を担当します。</p>
+    Aチーム（朱・左棚）とBチーム（青・右棚）が独立して稼働します。</p>
   </div>
 
   <div class="controls">
@@ -508,7 +512,7 @@ function flashShelf(id, finalClass, finalText) {
 let currentMode = 'in';
 let step = 0;
 
-// ─── STEPS: 預入（A/B 同時進行） ───────────────────────
+// ─── STEPS: 預入 ───────────────────────
 const TOTAL_IN = 5;
 const stepsIn = [
   {
@@ -579,7 +583,7 @@ const stepsIn = [
   }
 ];
 
-// ─── STEPS: 返却（A/B 同時進行） ───────────────────────
+// ─── STEPS: 返却 ───────────────────────
 const TOTAL_OUT = 5;
 const stepsOut = [
   {
@@ -672,16 +676,11 @@ function updateProg() {
 function hardReset() {
   step = 0;
   buildShelves();
-  // ボランティア初期位置（両方表示）
   mv('vol',  { left:'calc(50% - 36px)', bottom:'20px', opacity:1 });
   mv('vol2', { left:'calc(50% + 14px)', bottom:'20px', opacity:1 });
-  // 荷物・タグを隠す
   ['bag','bag2','tag-a1','tag-a2','tag-b1','tag-b2'].forEach(id => ao(id, false));
-  // 矢印を隠す
   ['arr-A-cnt','arr-B-cnt','arr-to-shelfA','arr-to-shelfB'].forEach(id => ao(id, false));
-  // スタッフハイライト解除
   ['stA_haichi','stA_uketsuke','stB_uketsuke','stB_haichi'].forEach(id => hl(id, false));
-  // ボタン
   g('next-btn').textContent = '次のステップ ▶';
   g('next-btn').disabled    = false;
 }
@@ -693,7 +692,7 @@ function reset() {
     ? '▶ スタート：A1・A2・B1・B2 同時稼働！'
     : '▶ スタート：A1・B1 が同時に返却対応';
   g('step-desc').textContent = isIn
-    ? 'A1・A2（赤チーム）とB1・B2（青チーム）が左右の棚を独立して並行対応。⭐がA側、🌟がB側のボランティアです。「次のステップ」を押して進行を確認してください。'
+    ? 'A1・A2（朱チーム・実線枠）とB1・B2（青チーム・破線枠）が左右の棚を独立して並行対応。⭐がA側、🌟がB側のボランティアです。「次のステップ」を押して進行を確認してください。'
     : 'A1・B1が返却を処理。⭐がA-6の半券、🌟がB-4の半券を持って来場しています。';
   g('counter-disp').textContent = '0 / ' + getTotal();
   updateProg();
