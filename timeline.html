@@ -6,10 +6,19 @@
 <title>Tokyo Pride 2026 – 当日オペレーション スケジュール</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700;900&family=Space+Mono:wght@400;700&display=swap');
+  /* ===== Color Universal Design (CUD) 準拠パレット =====
+     P型(赤)・D型(緑)色覚でも識別可能な配色に変更
+     - 赤系: 朱色(vermilion)寄りに → 緑系と明度差をつける
+     - 緑系: 青みのある緑(teal)に → 赤系と区別しやすく
+     - 形状(ストライプ)とアイコン(⚠)でも区別できるよう二重化 */
   :root {
     --bg: #0d0d14; --surface: #16161f; --surface2: #1e1e2e;
-    --text: #f0f0f8; --dim: #888899; --accent: #FF3A5C;
-    --green: #4CAF50; --blue: #64B5F6; --gold: #FFD700; --orange: #FF8C00;
+    --text: #f0f0f8; --dim: #888899;
+    --accent: #FF6E40;   /* vermilion (旧 #FF3A5C) */
+    --green: #1AC6A8;    /* bluish green / teal (旧 #4CAF50) */
+    --blue: #5BC0EB;     /* sky blue (旧 #64B5F6) */
+    --gold: #FFD93D;     /* yellow (ハイライト用) */
+    --orange: #FFA94D;   /* warm orange (旧 #FF8C00) */
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body {
@@ -84,27 +93,59 @@
     border-radius: 3px;
     display: flex; align-items: center; justify-content: center;
     z-index: 1; cursor: default;
+    font-size: 10px; font-weight: 900;
   }
-  /* normal: 暗めのグレーグリーン、存在は示すが目立たせない */
+  /* normal: 落ち着いた青緑のベタ塗り（明度を抑える） */
   .bar.normal {
-    background: #2c4a2e;
-    border: 1px solid #3d6640;
+    background: #1f4a48;
+    border: 1px solid #2d6b66;
+    color: rgba(255,255,255,.35);
   }
-  /* busy: 鮮やかな赤＋グロー＋アニメーション */
+  /* normal バーの中に小さなドット（テクスチャ補助） */
+  .bar.normal::before {
+    content: '';
+    position: absolute; inset: 0;
+    background-image: radial-gradient(circle, rgba(255,255,255,.08) 1px, transparent 1.5px);
+    background-size: 6px 6px;
+    border-radius: 3px;
+    pointer-events: none;
+  }
+
+  /* busy: 斜めストライプ + 鮮やかな朱色 + ⚠アイコン
+     → 色を識別できなくても「縞模様」と「⚠」で混雑だと分かる */
   .bar.busy {
-    background: linear-gradient(90deg, #c42840, #ff4d6a, #c42840);
-    background-size: 200% 100%;
-    animation: shimmer 2.5s ease infinite;
-    box-shadow: 0 0 10px rgba(255,58,92,.6), 0 0 2px rgba(255,58,92,.9) inset;
-    border: 1px solid rgba(255,100,120,.5);
+    background:
+      repeating-linear-gradient(
+        45deg,
+        #FF6E40 0,
+        #FF6E40 6px,
+        #B84518 6px,
+        #B84518 12px
+      );
+    box-shadow: 0 0 10px rgba(255,110,64,.55), 0 0 2px rgba(255,255,255,.3) inset;
+    border: 1px solid rgba(255,180,140,.6);
+    animation: stripe-move 1.8s linear infinite;
+    color: #fff;
+    text-shadow: 0 0 3px rgba(0,0,0,.7);
   }
-  @keyframes shimmer {
-    0%   { background-position: 200% 0; }
-    100% { background-position: -200% 0; }
+  .bar.busy::after {
+    content: '⚠';
+    font-size: 11px;
+    line-height: 1;
+  }
+  @keyframes stripe-move {
+    0%   { background-position: 0 0; }
+    100% { background-position: 17px 17px; }  /* sqrt(12²+12²) ≒ 17 */
   }
 
   /* tooltip */
   .bar[data-tip] { position: absolute; }
+  .bar[data-tip]:hover::before {
+    /* normal バーのドット背景を維持するため、tooltipは ::after ではなく別実装 */
+  }
+  .bar[data-tip]:hover {
+    z-index: 20;
+  }
   .bar[data-tip]:hover::after {
     content: attr(data-tip);
     position: absolute; bottom: calc(100% + 6px); left: 50%;
@@ -114,20 +155,43 @@
     padding: 4px 8px; border-radius: 5px; white-space: nowrap;
     z-index: 50; border: 1px solid #ffffff20;
     pointer-events: none;
+    text-shadow: none;
+  }
+  /* busy のホバー時は ⚠ を消してtooltipを表示 */
+  .bar.busy:hover::after {
+    content: attr(data-tip);
+    position: absolute; bottom: calc(100% + 6px); left: 50%;
+    transform: translateX(-50%);
+    background: #111; color: var(--text);
+    font-size: 9px; font-family: 'Space Mono', monospace;
+    padding: 4px 8px; border-radius: 5px; white-space: nowrap;
+    z-index: 50; border: 1px solid #ffffff20;
+    pointer-events: none;
+    text-shadow: none;
   }
 
   /* ── LEGEND ── */
   .legend {
     display: flex; gap: 16px; margin-top: 10px;
     padding-top: 8px; border-top: 1px solid #ffffff08;
-    align-items: center;
+    align-items: center; flex-wrap: wrap;
   }
   .legend-item { display: flex; align-items: center; gap: 7px; font-size: 10px; color: var(--dim); }
-  .swatch { width: 22px; height: 11px; border-radius: 3px; }
-  .swatch.normal { background: #2c4a2e; border: 1px solid #3d6640; }
-  .swatch.busy   { background: #ff4d6a; box-shadow: 0 0 5px rgba(255,58,92,.5); }
+  .swatch { width: 22px; height: 11px; border-radius: 3px; position: relative; overflow: hidden; }
+  .swatch.normal {
+    background: #1f4a48; border: 1px solid #2d6b66;
+  }
+  .swatch.busy {
+    background: repeating-linear-gradient(
+      45deg, #FF6E40 0, #FF6E40 3px, #B84518 3px, #B84518 6px
+    );
+    box-shadow: 0 0 4px rgba(255,110,64,.4);
+  }
   .gantt-note {
-    margin-top: 6px; font-size: 9px; font-family: 'Space Mono', monospace; color: #444;
+    margin-top: 6px; font-size: 9px; font-family: 'Space Mono', monospace; color: #666;
+  }
+  .gantt-note.a11y {
+    margin-top: 4px; color: #888;
   }
 
   /* ===== DETAIL CARDS ===== */
@@ -145,14 +209,19 @@
   .card-header {
     display: flex; align-items: center; gap: 8px; padding: 9px 12px 0;
   }
-  .card-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+  /* card-dot: 色だけでなく形(■/●/▲/◆)で区別 */
+  .card-dot {
+    width: 12px; height: 12px; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px; line-height: 1;
+  }
   .card-title { font-size: 12px; font-weight: 700; }
   .card-time {
     margin-left: auto; font-size: 9px;
     font-family: 'Space Mono', monospace; color: var(--dim);
   }
   .card-body {
-    padding: 5px 12px 9px 28px;
+    padding: 5px 12px 9px 32px;
     font-size: 10.5px; color: var(--dim); line-height: 1.8;
   }
   .card-body ul { list-style: none; }
@@ -213,9 +282,10 @@
 
       <div class="legend">
         <div class="legend-item"><div class="swatch normal"></div>通常稼働</div>
-        <div class="legend-item"><div class="swatch busy"></div>予想混雑時間帯</div>
+        <div class="legend-item"><div class="swatch busy"></div>⚠ 予想混雑時間帯（縞模様）</div>
       </div>
       <div class="gantt-note">* 横軸 7:00〜20:00 ／ セル幅 1h ／ スタート 7:30</div>
+      <div class="gantt-note a11y">* 色覚配慮：混雑時間帯は「斜め縞＋⚠アイコン」で識別できます</div>
     </div>
   </div>
 
@@ -225,7 +295,7 @@
 
     <div class="card has-busy">
       <div class="card-header">
-        <div class="card-dot" style="background:var(--accent)"></div>
+        <div class="card-dot" style="color:var(--accent)">●</div>
         <div class="card-title">入場 受付</div>
         <div class="card-time">7:30 〜 10:30</div>
       </div>
@@ -238,7 +308,7 @@
 
     <div class="card has-busy">
       <div class="card-header">
-        <div class="card-dot" style="background:var(--blue)"></div>
+        <div class="card-dot" style="color:var(--blue)">■</div>
         <div class="card-title">クローク</div>
         <div class="card-time">7:30 〜 20:00</div>
       </div>
@@ -254,7 +324,7 @@
 
     <div class="card has-busy">
       <div class="card-header">
-        <div class="card-dot" style="background:var(--green)"></div>
+        <div class="card-dot" style="color:var(--green)">▲</div>
         <div class="card-title">水分配布</div>
         <div class="card-time">7:30 〜 19:30</div>
       </div>
@@ -268,7 +338,7 @@
 
     <div class="card has-busy">
       <div class="card-header">
-        <div class="card-dot" style="background:var(--gold)"></div>
+        <div class="card-dot" style="color:var(--gold)">◆</div>
         <div class="card-title">弁当配布</div>
         <div class="card-time">10:00 〜 14:30</div>
       </div>
@@ -281,7 +351,7 @@
 
     <div class="card has-busy">
       <div class="card-header">
-        <div class="card-dot" style="background:var(--dim)"></div>
+        <div class="card-dot" style="color:var(--dim)">★</div>
         <div class="card-title">退場誘導</div>
         <div class="card-time">15:00 〜 18:30</div>
       </div>
@@ -342,7 +412,7 @@ bar('track-nyujo', 7.5, 8,    'normal', '7:30〜8:00 通常');
 bar('track-nyujo', 8,   9,    'busy',   '8:00〜9:00 ⚠ 混雑ピーク');
 bar('track-nyujo', 9,   10.5, 'normal', '9:00〜10:30 通常');
 
-// クローク: 7:30〜9:30混雑 / 9:30〜11:30通常 / 11:30〜14:00混雑 / 14〜16通常 / 16〜19混雑 / 19〜20通常
+// クローク
 bar('track-cloak', 7.5,  9.5,  'busy',   '7:30〜9:30 ⚠ 朝の預入ラッシュ');
 bar('track-cloak', 9.5,  11.5, 'normal', '9:30〜11:30 通常');
 bar('track-cloak', 11.5, 14,   'busy',   '11:30〜14:00 ⚠ 昼の返却ラッシュ');
@@ -350,7 +420,7 @@ bar('track-cloak', 14,   16,   'normal', '14:00〜16:00 通常');
 bar('track-cloak', 16,   19,   'busy',   '16:00〜19:00 ⚠ 退場返却ラッシュ');
 bar('track-cloak', 19,   20,   'normal', '19:00〜20:00 クローズ処理');
 
-// 水分: 7:30〜9:30混雑 / 9:30〜11通常 / 11〜15混雑 / 15〜19:30通常
+// 水分
 bar('track-water', 7.5,  9.5,  'busy',   '7:30〜9:30 ⚠ 朝の集中');
 bar('track-water', 9.5,  11,   'normal', '9:30〜11:00 通常');
 bar('track-water', 11,   15,   'busy',   '11:00〜15:00 ⚠ 炎天下ピーク');
