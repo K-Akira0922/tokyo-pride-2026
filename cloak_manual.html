@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>クローク担当マニュアル</title>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700;900&family=Zen+Maru+Gothic:wght@400;700;900&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --purple: #8B6BB1;
+      --light-purple: #EDE5F5;
+      --soft-purple: #C4A8E0;
+      --accent: #F5A623;
+      --text: #3D2B5E;
+      --bg: #FAFAFA;
+      --warning-bg: #FFF3E0;
+      --warning-border: #F5A623;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Zen Maru Gothic', 'Noto Sans JP', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    /* ヘッダー */
+    .page-header {
+      text-align: center;
+      padding: 32px 20px 24px;
+      background: linear-gradient(135deg, #8B6BB1 0%, #C4A8E0 100%);
+      border-radius: 20px;
+      margin-bottom: 12px;
+      color: white;
+    }
+
+    .page-header .rainbow-bar {
+      display: flex;
+      height: 6px;
+      border-radius: 3px;
+      overflow: hidden;
+      margin-bottom: 20px;
+    }
+
+    .rainbow-bar span {
+      flex: 1;
+    }
+
+    .page-header h1 {
+      font-size: 2rem;
+      font-weight: 900;
+      letter-spacing: 0.05em;
+      line-height: 1.3;
+      text-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    }
+
+    .page-header .subtitle {
+      font-size: 0.9rem;
+      margin-top: 8px;
+      opacity: 0.85;
+    }
+
+    /* 各セクション */
+    .section {
+      background: white;
+      border-radius: 20px;
+      margin-bottom: 28px;
+      overflow: hidden;
+      box-shadow: 0 4px 16px rgba(139, 107, 177, 0.12);
+    }
+
+    .section-img {
+      width: 100%;
+      display: block;
+      border-bottom: 3px solid var(--light-purple);
+    }
+
+    .section-content {
+      padding: 24px 28px 28px;
+    }
+
+    .section-title {
+      font-size: 1.4rem;
+      font-weight: 900;
+      color: var(--purple);
+      margin-bottom: 14px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      line-height: 1.4;
+    }
+
+    .section-body {
+      font-size: 0.95rem;
+      line-height: 1.9;
+      color: #4A3A6A;
+    }
+
+    .section-body p {
+      margin-bottom: 10px;
+    }
+
+    .section-body p:last-child {
+      margin-bottom: 0;
+    }
+
+    /* 強調テキスト */
+    strong {
+      color: var(--purple);
+      font-weight: 700;
+    }
+
+    /* 注意ボックス */
+    .warning-box {
+      background: var(--warning-bg);
+      border-left: 5px solid var(--warning-border);
+      border-radius: 0 12px 12px 0;
+      padding: 14px 18px;
+      margin-top: 14px;
+      font-size: 0.9rem;
+      line-height: 1.7;
+    }
+
+    .warning-box p {
+      margin-bottom: 6px;
+    }
+
+    .warning-box p:last-child {
+      margin-bottom: 0;
+    }
+
+    /* 締めの言葉 */
+    .closing-quote {
+      background: linear-gradient(135deg, #8B6BB1 0%, #C4A8E0 100%);
+      border-radius: 16px;
+      padding: 20px 24px;
+      margin-top: 16px;
+      color: white;
+      font-size: 0.95rem;
+      line-height: 1.8;
+      font-weight: 700;
+      text-align: center;
+    }
+
+    /* ナビリンク */
+    .nav-links {
+      display: flex;
+      gap: 12px;
+      margin: 8px 0 24px;
+      flex-wrap: wrap;
+    }
+
+    .nav-links a {
+      display: inline-block;
+      padding: 10px 20px;
+      border-radius: 50px;
+      font-size: 0.9rem;
+      font-weight: 700;
+      text-decoration: none;
+      transition: opacity 0.2s;
+    }
+
+    .nav-links a:hover {
+      opacity: 0.8;
+    }
+
+    .btn-top {
+      background: var(--light-purple);
+      color: var(--purple);
+    }
+
+    .btn-flow {
+      background: var(--purple);
+      color: white;
+    }
+
+    /* フッター */
+    .page-footer {
+      text-align: center;
+      padding: 20px;
+      font-size: 0.8rem;
+      color: var(--soft-purple);
+    }
+
+    /* 印刷対応 */
+    @media print {
+      body {
+        padding: 0;
+        max-width: 100%;
+        background: white;
+      }
+
+      .section {
+        box-shadow: none;
+        border: 1px solid #DDD;
+        break-inside: avoid;
+        margin-bottom: 20px;
+      }
+
+      .page-header {
+        background: var(--purple) !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+
+      .closing-quote {
+        background: var(--purple) !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+
+      .warning-box {
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ヘッダー -->
+  <header class="page-header">
+    <div class="rainbow-bar">
+      <span style="background:#E40303"></span>
+      <span style="background:#FF8C00"></span>
+      <span style="background:#FFED00"></span>
+      <span style="background:#008026"></span>
+      <span style="background:#004DFF"></span>
+      <span style="background:#750787"></span>
+    </div>
+    <h1>🧳 クローク担当<br>マニュアル</h1>
+    <p class="subtitle">Tokyo Rainbow Pride ボランティア統括セクション</p>
+  </header>
+
+  <!-- セクション1：クロークって何するの？ -->
+  <section class="section">
+    <img class="section-img" src="クローク1.png" alt="クロークカウンターで出迎えるキャラクター">
+    <div class="section-content">
+      <h2 class="section-title">🧳 クロークってなにするの？</h2>
+      <div class="section-body">
+        <p>ボランティアさんの<strong>荷物の預かりと引き出し</strong>をするお仕事です！</p>
+        <p>取り違えや、紛失、盗難がないように<strong>荷物管理</strong>をしましょう。</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- セクション2：荷物の預かり -->
+  <section class="section">
+    <img class="section-img" src="クローク2.png" alt="荷物にタグをつけて半券を渡すキャラクター">
+    <div class="section-content">
+      <h2 class="section-title">📦 荷物の預かり</h2>
+      <div class="section-body">
+        <p>１つ１つの荷物は<strong>「タグ」</strong>で管理します。</p>
+        <p>預かる荷物に「タグ」をつけて、「タグ」の<strong>半券を荷主に渡し</strong>、荷物はクローク棚に収納します。</p>
+        <p>「タグ」の<strong>色に合わせて収納するエリア</strong>を大まかに分けていて、そのエリアに「タグ」の<strong>番号順</strong>に収納していきます。</p>
+        <div class="warning-box">
+          <p>⚠️ <strong>貴重品は預かれません。</strong>必ず身につけてもらうようにしてください。</p>
+          <p>⚠️ 「タグ」の半券を無くす方が多いので、<strong>その場ですぐに写真撮影するようにおすすめ</strong>してください。</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- セクション3：荷物の引き出し -->
+  <section class="section">
+    <img class="section-img" src="クローク3.png" alt="半券を確認して荷物を取り出すキャラクター">
+    <div class="section-content">
+      <h2 class="section-title">🔍 荷物の引き出し</h2>
+      <div class="section-body">
+        <p>「タグ」の<strong>半券を見せてもらい</strong>、「タグ」の色と番号から対応する荷物を見つけ、荷主に渡します。</p>
+        <div class="warning-box">
+          <p>⚠️ 万が一<strong>半券をなくした方</strong>がいた場合、取り違えや盗難のリスクがありますので、<strong>荷物の特徴を詳しく聞いて</strong>間違いないことを確認するか、<strong>対応をスタッフに相談</strong>してください。</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- セクション4：その他に気をつけること -->
+  <section class="section">
+    <img class="section-img" src="クローク4.png" alt="丁寧に荷物を扱うキャラクター2人">
+    <div class="section-content">
+      <h2 class="section-title">✅ その他に気をつけること</h2>
+      <div class="section-body">
+        <p>荷物は<strong>丁寧に</strong>扱いましょう。</p>
+        <p>クロークエリアには、<strong>最低2人以上が常駐</strong>しているようにしてください。</p>
+        <div class="closing-quote">
+          みんなの大切な荷物をお預かりします！<br>チームワークで安全・安心なクロークを作りましょう🧳✨
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ナビリンク -->
+  <nav class="nav-links">
+    <a class="btn-top" href="index.html">← トップに戻る</a>
+  </nav>
+
+  <footer class="page-footer">
+    Tokyo Rainbow Pride ボランティア統括セクション
+  </footer>
+
+</body>
+</html>
