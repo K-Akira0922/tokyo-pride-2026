@@ -258,10 +258,15 @@
     padding-left: 14px; position: relative;
   }
   .notes li::before { content: '・'; color: var(--orange); position: absolute; left: 0; }
-  .notes .meta {
-    margin-top: 8px; font-size: 10px; color: var(--dim);
-    font-family: 'Space Mono', monospace;
+  /* ===== NAV ===== */
+  .nav-links { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 20px; }
+  .nav-link {
+    display: inline-flex; align-items: center; gap: 5px;
+    padding: 7px 12px; border-radius: 8px; text-decoration: none;
+    background: #ffffff09; border: 1px solid #ffffff12;
+    color: var(--text); font-size: 11px; font-weight: 700; transition: all .2s;
   }
+  .nav-link:hover { background: #ffffff16; transform: translateY(-1px); }
 </style>
 </head>
 <body>
@@ -511,5 +516,13 @@ function updateProg() {
 
 updateProg();
 </script>
+
+<div class="scene" style="padding-top:0;">
+  <div class="nav-links">
+    <a class="nav-link" href="index.html">← トップに戻る</a>
+    <a class="nav-link" href="timeline.html">📅 スケジュール</a>
+  </div>
+</div>
+
 </body>
 </html>
