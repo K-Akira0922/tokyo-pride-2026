@@ -33,7 +33,6 @@
 
   .scene { padding: 12px 14px 28px; max-width: 720px; margin: 0 auto; }
 
-  /* タブ */
   .tabs {
     display: flex; gap: 0; margin-bottom: 12px;
     border: 1px solid #ffffff15; border-radius: 9px; overflow: hidden;
@@ -46,7 +45,6 @@
   .tab-btn.active { background: var(--accent); color: #fff; pointer-events: none; }
   .tab-btn:not(.active):hover { background: #ffffff0f; color: var(--text); }
 
-  /* PDF ラッパー */
   .pdf-wrap { display: none; flex-direction: column; gap: 10px; }
   .pdf-wrap.visible { display: flex; }
 
@@ -55,8 +53,6 @@
     font-size: 11px; color: var(--dim); font-family: 'Space Mono', monospace;
     flex-wrap: wrap; gap: 8px;
   }
-  .pdf-meta .hint { font-size: 10px; }
-
   .btn-open {
     display: inline-flex; align-items: center; gap: 5px;
     padding: 6px 12px; border-radius: 7px;
@@ -66,23 +62,37 @@
   }
   .btn-open:hover { background: rgba(255,110,64,.24); }
 
-  .pdf-frame {
-    width: 100%; height: 75vh; min-height: 480px;
-    border: 1px solid #ffffff12; border-radius: 10px;
-    background: #fff;
+  .canvas-wrap {
+    width: 100%; overflow-x: auto; overflow-y: hidden;
+    background: #fff; border-radius: 10px;
+    border: 1px solid #ffffff12;
+  }
+  .pdf-canvas {
+    display: block;
+    /* 幅はJSで設定 */
   }
 
-  /* モバイル注記 */
-  .mobile-note {
-    background: rgba(91,192,235,.07);
-    border: 1px solid rgba(91,192,235,.2);
-    border-left: 3px solid var(--blue);
-    border-radius: 8px; padding: 9px 12px;
-    font-size: 10.5px; color: var(--dim); line-height: 1.6;
+  .pdf-loading {
+    padding: 32px 16px; text-align: center;
+    font-size: 11px; color: var(--dim); font-family: 'Space Mono', monospace;
+    display: flex; align-items: center; justify-content: center; gap: 10px;
   }
-  .mobile-note strong { color: var(--blue); }
+  .dp { display: flex; gap: 4px; }
+  .dp span { width: 5px; height: 5px; border-radius: 50%; background: var(--accent); animation: pu 1.2s ease infinite; }
+  .dp span:nth-child(2) { animation-delay:.2s; }
+  .dp span:nth-child(3) { animation-delay:.4s; }
+  @keyframes pu { 0%,80%,100%{opacity:.2} 40%{opacity:1} }
 
-  /* ナビ */
+  .pdf-error {
+    padding: 20px 16px; text-align: center;
+    font-size: 11px; color: var(--accent); font-family: 'Space Mono', monospace;
+  }
+
+  .hint-bar {
+    font-size: 10px; color: var(--dim); font-family: 'Space Mono', monospace;
+    text-align: center; padding: 6px 0;
+  }
+
   .nav-links { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 16px; }
   .nav-link {
     display: inline-flex; align-items: center; gap: 5px;
@@ -102,39 +112,37 @@
 
 <div class="scene">
 
-  <!-- タブ切り替え -->
   <div class="tabs">
     <button class="tab-btn active" id="btn-0606" onclick="switchTab('0606')">6月6日（土）</button>
     <button class="tab-btn"        id="btn-0607" onclick="switchTab('0607')">6月7日（日）</button>
   </div>
 
-  <!-- スマホ向け注記 -->
-  <div class="mobile-note" style="margin-bottom:10px;">
-    📱 スマホの場合は<strong>ピンチアウトで拡大</strong>できます。右上の「別タブで開く」ボタンから開くとより見やすいです。
-  </div>
-
   <!-- 6/6 -->
   <div class="pdf-wrap visible" id="wrap-0606">
     <div class="pdf-meta">
-      <span class="hint">統括サポート / 6月6日（土）</span>
+      <span>統括サポート / 6月6日（土）</span>
       <a class="btn-open" href="Tokyopride2026ボラ統サポート_シフト_0606_.pdf" target="_blank">↗ 別タブで開く</a>
     </div>
-    <iframe class="pdf-frame"
-      src="Tokyopride2026ボラ統サポート_シフト_0606_.pdf"
-      title="シフト表 6/6">
-    </iframe>
+    <div class="canvas-wrap" id="canvas-wrap-0606">
+      <div class="pdf-loading" id="loading-0606">
+        <div class="dp"><span></span><span></span><span></span></div>読み込み中...
+      </div>
+    </div>
+    <div class="hint-bar">← 横スクロール・ピンチアウトで拡大できます →</div>
   </div>
 
   <!-- 6/7 -->
   <div class="pdf-wrap" id="wrap-0607">
     <div class="pdf-meta">
-      <span class="hint">統括サポート / 6月7日（日）</span>
+      <span>統括サポート / 6月7日（日）</span>
       <a class="btn-open" href="Tokyopride2026ボラ統サポート_シフト_0607_.pdf" target="_blank">↗ 別タブで開く</a>
     </div>
-    <iframe class="pdf-frame"
-      src="Tokyopride2026ボラ統サポート_シフト_0607_.pdf"
-      title="シフト表 6/7">
-    </iframe>
+    <div class="canvas-wrap" id="canvas-wrap-0607">
+      <div class="pdf-loading" id="loading-0607">
+        <div class="dp"><span></span><span></span><span></span></div>読み込み中...
+      </div>
+    </div>
+    <div class="hint-bar">← 横スクロール・ピンチアウトで拡大できます →</div>
   </div>
 
   <div class="nav-links">
@@ -144,13 +152,63 @@
 
 </div>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 <script>
+pdfjsLib.GlobalWorkerOptions.workerSrc =
+  'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+
+const FILES = {
+  '0606': 'Tokyopride2026ボラ統サポート_シフト_0606_.pdf',
+  '0607': 'Tokyopride2026ボラ統サポート_シフト_0607_.pdf',
+};
+const rendered = { '0606': false, '0607': false };
+
+async function renderPDF(day) {
+  if (rendered[day]) return;
+  rendered[day] = true;
+
+  const wrap    = document.getElementById('canvas-wrap-' + day);
+  const loading = document.getElementById('loading-' + day);
+
+  try {
+    const pdf = await pdfjsLib.getDocument(FILES[day]).promise;
+
+    // 全ページを縦に並べる
+    for (let i = 1; i <= pdf.numPages; i++) {
+      const page     = await pdf.getPage(i);
+      // 画面幅に合わせてスケール計算（最低900px確保）
+      const vp0      = page.getViewport({ scale: 1 });
+      const viewW    = Math.max(window.innerWidth - 28, 900);
+      const scale    = viewW / vp0.width;
+      const viewport = page.getViewport({ scale });
+
+      const canvas  = document.createElement('canvas');
+      canvas.className = 'pdf-canvas';
+      canvas.width  = viewport.width;
+      canvas.height = viewport.height;
+      canvas.style.width  = viewport.width  + 'px';
+      canvas.style.height = viewport.height + 'px';
+
+      if (i === 1) loading.remove();
+      wrap.appendChild(canvas);
+
+      await page.render({ canvasContext: canvas.getContext('2d'), viewport }).promise;
+    }
+  } catch (e) {
+    loading.innerHTML = `<div class="pdf-error">⚠ 読み込みに失敗しました。<br>「別タブで開く」からご確認ください。</div>`;
+  }
+}
+
 function switchTab(day) {
   ['0606','0607'].forEach(d => {
     document.getElementById('btn-'  + d).className = 'tab-btn' + (d === day ? ' active' : '');
     document.getElementById('wrap-' + d).className = 'pdf-wrap' + (d === day ? ' visible' : '');
   });
+  renderPDF(day);
 }
+
+// 初期表示
+renderPDF('0606');
 </script>
 </body>
 </html>
