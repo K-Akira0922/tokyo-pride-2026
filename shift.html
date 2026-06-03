@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tokyo Pride 2026 – シフト表</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700;900&family=Space+Mono:wght@400;700&display=swap');
+  :root {
+    --bg: #0d0d14; --surface: #16161f; --surface2: #1e1e2e;
+    --text: #f0f0f8; --dim: #888899;
+    --accent: #FF6E40; --blue: #5BC0EB; --gold: #FFD93D;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--bg); color: var(--text);
+    font-family: 'Noto Sans JP', sans-serif; min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+  }
+  .rainbow-bar {
+    height: 4px; width: 100%; position: fixed; top: 0; left: 0; z-index: 100;
+    background: linear-gradient(90deg,#FF3A5C,#FF8C00,#FFD700,#4CAF50,#2196F3,#9C27B0);
+  }
+  header { margin-top: 4px; padding: 10px 18px 8px; border-bottom: 1px solid #ffffff10; }
+  header h1 {
+    font-size: 11px; font-family: 'Space Mono',monospace;
+    color: var(--dim); text-transform: uppercase; letter-spacing:.1em;
+  }
+  header h1 span {
+    display:block; font-size:15px; color:var(--text);
+    font-family:'Noto Sans JP',sans-serif; margin-top:2px; font-weight:700;
+  }
+
+  .scene { padding: 12px 14px 28px; max-width: 720px; margin: 0 auto; }
+
+  /* タブ */
+  .tabs {
+    display: flex; gap: 0; margin-bottom: 12px;
+    border: 1px solid #ffffff15; border-radius: 9px; overflow: hidden;
+  }
+  .tab-btn {
+    flex: 1; padding: 10px 0; font-size: 13px; font-weight: 700;
+    font-family: 'Noto Sans JP', sans-serif; border: none; cursor: pointer;
+    background: none; color: var(--dim); transition: all .2s;
+  }
+  .tab-btn.active { background: var(--accent); color: #fff; pointer-events: none; }
+  .tab-btn:not(.active):hover { background: #ffffff0f; color: var(--text); }
+
+  /* PDF ラッパー */
+  .pdf-wrap { display: none; flex-direction: column; gap: 10px; }
+  .pdf-wrap.visible { display: flex; }
+
+  .pdf-meta {
+    display: flex; align-items: center; justify-content: space-between;
+    font-size: 11px; color: var(--dim); font-family: 'Space Mono', monospace;
+    flex-wrap: wrap; gap: 8px;
+  }
+  .pdf-meta .hint { font-size: 10px; }
+
+  .btn-open {
+    display: inline-flex; align-items: center; gap: 5px;
+    padding: 6px 12px; border-radius: 7px;
+    background: rgba(255,110,64,.14); border: 1px solid rgba(255,110,64,.35);
+    color: var(--accent); font-size: 11px; font-weight: 700;
+    text-decoration: none; transition: all .2s; white-space: nowrap;
+  }
+  .btn-open:hover { background: rgba(255,110,64,.24); }
+
+  .pdf-frame {
+    width: 100%; height: 75vh; min-height: 480px;
+    border: 1px solid #ffffff12; border-radius: 10px;
+    background: #fff;
+  }
+
+  /* モバイル注記 */
+  .mobile-note {
+    background: rgba(91,192,235,.07);
+    border: 1px solid rgba(91,192,235,.2);
+    border-left: 3px solid var(--blue);
+    border-radius: 8px; padding: 9px 12px;
+    font-size: 10.5px; color: var(--dim); line-height: 1.6;
+  }
+  .mobile-note strong { color: var(--blue); }
+
+  /* ナビ */
+  .nav-links { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 16px; }
+  .nav-link {
+    display: inline-flex; align-items: center; gap: 5px;
+    padding: 7px 12px; border-radius: 8px; text-decoration: none;
+    background: #ffffff09; border: 1px solid #ffffff12;
+    color: var(--text); font-size: 11px; font-weight: 700; transition: all .2s;
+  }
+  .nav-link:hover { background: #ffffff16; transform: translateY(-1px); }
+</style>
+</head>
+<body>
+<div class="rainbow-bar"></div>
+
+<header>
+  <h1>Tokyo Pride 2026 / Operations<span>📋 ボランティア シフト表</span></h1>
+</header>
+
+<div class="scene">
+
+  <!-- タブ切り替え -->
+  <div class="tabs">
+    <button class="tab-btn active" id="btn-0606" onclick="switchTab('0606')">6月6日（土）</button>
+    <button class="tab-btn"        id="btn-0607" onclick="switchTab('0607')">6月7日（日）</button>
+  </div>
+
+  <!-- スマホ向け注記 -->
+  <div class="mobile-note" style="margin-bottom:10px;">
+    📱 スマホの場合は<strong>ピンチアウトで拡大</strong>できます。右上の「別タブで開く」ボタンから開くとより見やすいです。
+  </div>
+
+  <!-- 6/6 -->
+  <div class="pdf-wrap visible" id="wrap-0606">
+    <div class="pdf-meta">
+      <span class="hint">統括サポート / 6月6日（土）</span>
+      <a class="btn-open" href="Tokyopride2026ボラ統サポート_シフト_0606_.pdf" target="_blank">↗ 別タブで開く</a>
+    </div>
+    <iframe class="pdf-frame"
+      src="Tokyopride2026ボラ統サポート_シフト_0606_.pdf"
+      title="シフト表 6/6">
+    </iframe>
+  </div>
+
+  <!-- 6/7 -->
+  <div class="pdf-wrap" id="wrap-0607">
+    <div class="pdf-meta">
+      <span class="hint">統括サポート / 6月7日（日）</span>
+      <a class="btn-open" href="Tokyopride2026ボラ統サポート_シフト_0607_.pdf" target="_blank">↗ 別タブで開く</a>
+    </div>
+    <iframe class="pdf-frame"
+      src="Tokyopride2026ボラ統サポート_シフト_0607_.pdf"
+      title="シフト表 6/7">
+    </iframe>
+  </div>
+
+  <div class="nav-links">
+    <a class="nav-link" href="index.html">← トップに戻る</a>
+    <a class="nav-link" href="timeline.html">📅 スケジュール</a>
+  </div>
+
+</div>
+
+<script>
+function switchTab(day) {
+  ['0606','0607'].forEach(d => {
+    document.getElementById('btn-'  + d).className = 'tab-btn' + (d === day ? ' active' : '');
+    document.getElementById('wrap-' + d).className = 'pdf-wrap' + (d === day ? ' visible' : '');
+  });
+}
+</script>
+</body>
+</html>
